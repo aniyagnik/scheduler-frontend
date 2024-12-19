@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, Image, StyleSheet } from 'react-native';
 import LoginButton from '@/components/loginButton.jsx'
 import { useRouter } from 'expo-router';
 
@@ -9,6 +9,14 @@ export default function Index() {
   }
   return (
     <View style={styles.container}>
+      <Image 
+        source={require('@/assets/images/waterO.gif')}
+        style={{
+            width:"100%",
+            height:"50%",
+        }}
+        resizeMode='cover'  
+      />  
       <Text style={styles.text}>Welcome! Traveller</Text>
       <LoginButton title='Google' iconName="google-" onPress={onLoginPress}/>
     </View>
@@ -18,12 +26,12 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#25292e',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },
   text: {
-    color: '#fff',
+    color: 'black',
     fontSize: 30,
   },
 });

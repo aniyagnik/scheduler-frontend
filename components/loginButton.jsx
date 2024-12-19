@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
 import Entypo from '@expo/vector-icons/Entypo';
+
 const LoginButton = ({title,iconName,onPress}) => {
   return (
     <View>
@@ -9,14 +10,7 @@ const LoginButton = ({title,iconName,onPress}) => {
 				style={styles.loginButton}
         onPress={onPress}
 			>
-        <View style={{
-          backgroundColor:'crimson',
-          height:30,
-          width:30,
-          borderRadius:30,
-          justifyContent:'center',
-          right:20
-        }}>
+        <View style={styles.wrapper}>
           <Entypo 
             style={{display:'flex',justifyContent:'center'}} 
             name={iconName} 
@@ -43,6 +37,14 @@ const styles = StyleSheet.create({
     backgroundColor:'white',
     margin:10
 	},
+  wrapper:{
+    backgroundColor:'crimson',
+    height:30,
+    width:30,
+    borderRadius:30,
+    justifyContent:'center',
+    right:20
+  },
   text:{
     display: 'flex',
     alignSelf: 'center',
