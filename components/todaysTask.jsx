@@ -1,15 +1,18 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import Entypo from '@expo/vector-icons/Entypo';
+import * as Progress from 'react-native-progress';
 
 const TodaysTask = ({task,index,onClickDone}) => {
   return (
     <View style={{flexDirection:'row',gap:15,borderBottomWidth:1}}>
-      <View style={StyleSheet.title}><Text>{task.title}</Text></View>
+      <View style={styles.title}><Text>{task.title}</Text></View>
       <View>
         {task.isMeasurable===true?
           (
-            <View></View>
+            <View>
+              <Progress.Circle progress={0.3} thickness={3} textStyle={{fontSize:10}} showsText={true} size={30}/>
+            </View>
           )
           :
           (
@@ -28,7 +31,7 @@ const TodaysTask = ({task,index,onClickDone}) => {
 
 export default TodaysTask
 
-const styles = StyleSheet({
+const styles = StyleSheet.create({
   title:{
     color: 'crimson'
   },
