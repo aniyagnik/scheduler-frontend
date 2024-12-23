@@ -11,12 +11,16 @@ class Dashboard extends Component {
 			{
 				_id:'0',
 				title: 'study',
+				score:5,
+				target:10,
 				isMeasurable:true, 
 				isDone:false, 
 			},
 			{
 				_id:'1',
 				title: 'sleep',
+				score:5,
+				target:8,
 				isMeasurable:true, 
 				isDone:false,
 			},
@@ -25,6 +29,14 @@ class Dashboard extends Component {
 				title: 'exercise', 
 				isMeasurable:false, 
 				isDone:true
+			}, // last object of array has report of today
+			{
+				_id:'3',
+				title: 'completion', 
+				isMeasurable:true, 
+				score:40,
+				target:50,
+				isDone:false
 			}
 		]
 	}
@@ -37,6 +49,7 @@ class Dashboard extends Component {
 	toggleTaskCompletion = (index:number)=>{
 		const updatedTask = this.state.tasks[index]
 		updatedTask.isDone = !updatedTask.isDone
+		// code to alter score of last object on array based on prioritity
 		this.setState({
 			tasks : [
 				...this.state.tasks.splice(0,index),

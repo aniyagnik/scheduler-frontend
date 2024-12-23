@@ -11,7 +11,7 @@ const TodaysTask = ({task,index,onClickDone}) => {
         {task.isMeasurable===true?
           (
             <View>
-              <Progress.Circle progress={0.3} thickness={3} textStyle={{fontSize:10}} showsText={true} size={30}/>
+              <Progress.Circle progress={task.score/task.target} thickness={3} textStyle={{fontSize:10}} showsText={true} size={30}/>
             </View>
           )
           :
