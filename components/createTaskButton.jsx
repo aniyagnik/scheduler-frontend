@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-const createTaskButton = ({onPress}) => {
+const CreateTaskButton = ({onPress}) => {
   return (
     <View>
       <TouchableOpacity
@@ -22,7 +22,7 @@ const createTaskButton = ({onPress}) => {
   )
 }
 
-export default createTaskButton
+export default CreateTaskButton
 
 const styles = StyleSheet.create({
 	createTaskButton: {

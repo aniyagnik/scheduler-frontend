@@ -1,7 +1,6 @@
-import { View, Image, Text, StyleSheet, TouchableOpacity, NativeSyntheticEvent, TextInputChangeEventData, Modal, FlatList } from 'react-native'
+import { View, Image, Text, StyleSheet, TouchableOpacity , ScrollView, TextInput} from 'react-native'
 import React, { ChangeEvent, useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons'
-import { ScrollView } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 
 export default function CreateTask() {
@@ -17,7 +16,7 @@ export default function CreateTask() {
 		targetType: '', 
 		target: '', 
 	})
-	const handleFormDataChange = (event:ChangeEvent<HTMLInputElement>) => {
+	const handleFormDataChange = (event:any) => {
 		const {name,value} = event.target
 		console.log(name,value)
 		setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
@@ -40,17 +39,17 @@ export default function CreateTask() {
       />
 			<Text style={styles.heading}>Create Task</Text>
       <View style={{padding:20,gap:20}}>
-				<input
-					name='title'
+				<TextInput
+					//name='title'
 					placeholder='title'
 					style={styles.textField}
-					onChange={handleFormDataChange}
+					onChangeText={handleFormDataChange}
 				/>
-				<input
-					name="description"
+				<TextInput
+					//name="description"
 					placeholder='description (optional)'
 					style={styles.textField}
-					onChange={handleFormDataChange}
+					onChangeText={handleFormDataChange}
 				/>
 				<select name="priority" id="priority">
 					<option value="p" selected>Priority</option>
@@ -64,28 +63,28 @@ export default function CreateTask() {
 					<option value="monthly">Monthly</option>
 					<option value="once">Once</option>
 				</select>
-				<input type="date" id="date" name="date"/>
-				<input type="radio" id="yesNo" name="type" value="yes or no"/>
-				<label htmlFor="yes or no">HTML</label><br/>
-				<input type="radio" id="measurable" name="measurable" value="measurable"/>
+				{/* <TextInput type="date" id="date" name="date"/>
+				<TextInput type="radio" id="yesNo" name="type" value="yes or no"/> */}
+				<label htmlFor="yes or no">yes | no</label><br/>
+				{/* <TextInput type="radio" id="measurable" name="measurable" value="measurable"/> */}
 				<label htmlFor="measurable">measurable</label><br/>
-				<input
-					name="unit"
+				<TextInput
+					//name="unit"
 					placeholder='unit'
 					style={styles.textField}
-					onChange={handleFormDataChange}
+					onChangeText={handleFormDataChange}
 				/>
-				<input
-					name="targetType"
+				<TextInput
+					//name="targetType"
 					placeholder='target type'
 					style={styles.textField}
-					onChange={handleFormDataChange}
+					onChangeText={handleFormDataChange}
 				/>
-				<input
-					name="target"
+				<TextInput
+				//	name="target"
 					placeholder='target'
 					style={styles.textField}
-					onChange={handleFormDataChange}
+					onChangeText={handleFormDataChange}
 				/>
 				<TouchableOpacity
 					activeOpacity={0.7}
