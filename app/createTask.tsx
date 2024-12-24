@@ -1,26 +1,22 @@
 import { View, Image, Text, StyleSheet, TouchableOpacity , ScrollView, TextInput} from 'react-native'
-import React, { ChangeEvent, useState } from 'react'
+import React, { useState } from 'react'
+import {Picker} from '@react-native-picker/picker';
 import { MaterialIcons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router';
 
 export default function CreateTask() {
 	const [formData,setFormData] = useState({
 		title: '',
-		discription:'', 
+		description:'', 
 		priority:'', 
-		repetitionType:'',
-		date:'',
-		status: '',
-		type: '', 
+		repetitionType:'daily',
+		date:new Date(),
+		isMeasurable:0, 
 		unit: '', 
-		targetType: '', 
 		target: '', 
 	})
-	const handleFormDataChange = (event:any) => {
-		const {name,value} = event.target
-		console.log(name,value)
-		setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-	};
+
+	const [isMeasurable,setIsMeasurable] = useState(true)
 	const router = useRouter()
 	const submitForm = () => {
 		console.log(formData)
@@ -29,63 +25,67 @@ export default function CreateTask() {
 	}
   return (
     <ScrollView style={{flex:1}}>
-      <Image 
-        source={require('@/assets/images/waterO.gif')}
-        style={{
-            width:"100%",
-            height:"10%",
-        }}
-        resizeMode='cover'  
-      />
-			<Text style={styles.heading}>Create Task</Text>
-      <View style={{padding:20,gap:20}}>
+			<Image 
+				source={require('@/assets/images/waterO.gif')}
+				style={{
+						width:"100%",
+						height:"10%",
+				}}
+				resizeMode='cover'  
+				/>
+			<View style={{padding:20,gap:20,}}>
+				<Text style={styles.heading}>Create Task</Text>
 				<TextInput
-					//name='title'
 					placeholder='title'
 					style={styles.textField}
-					onChangeText={handleFormDataChange}
+					onChangeText={(value)=>setFormData((prevFormData) => ({ ...prevFormData, title: value }))}
 				/>
 				<TextInput
-					//name="description"
 					placeholder='description (optional)'
 					style={styles.textField}
-					onChangeText={handleFormDataChange}
+					onChangeText={(value)=>setFormData((prevFormData) => ({ ...prevFormData, description: value }))}
 				/>
-				<select name="priority" id="priority">
-					<option value="p" selected>Priority</option>
-					<option value="High">High</option>
-					<option value="Medium">Medium</option>
-					<option value="mercedes">Low</option>
-				</select> 
-				<select name="repetitionType" id="repetition">
-					<option value="daily" selected>Daily</option>
-					<option value="weekly">Weekly</option>
-					<option value="monthly">Monthly</option>
-					<option value="once">Once</option>
-				</select>
-				{/* <TextInput type="date" id="date" name="date"/>
-				<TextInput type="radio" id="yesNo" name="type" value="yes or no"/> */}
-				<label htmlFor="yes or no">yes | no</label><br/>
-				{/* <TextInput type="radio" id="measurable" name="measurable" value="measurable"/> */}
-				<label htmlFor="measurable">measurable</label><br/>
-				<TextInput
-					//name="unit"
-					placeholder='unit'
-					style={styles.textField}
-					onChangeText={handleFormDataChange}
-				/>
-				<TextInput
-					//name="targetType"
-					placeholder='target type'
-					style={styles.textField}
-					onChangeText={handleFormDataChange}
-				/>
-				<TextInput
-				//	name="target"
-					placeholder='target'
-					style={styles.textField}
-					onChangeText={handleFormDataChange}
-				/>
+				<Picker
+					selectedValue={formData.isMeasurable}
+					onValueChange={(value)=>{const val=value==1?true:false;setIsMeasurable(val); return setFormData((prevFormData) => ({ ...prevFormData, isMeasurable: value }))}}
+				>
+					<Picker.Item label="Task Type" value={0} />
+					<Picker.Item label="measurable" value={1} />
+					<Picker.Item label="yes or no" value={2} />
+				</Picker>
+				<Picker
+					selectedValue='priority'
+					onValueChange={(value)=>setFormData((prevFormData) => ({ ...prevFormData, priority: value }))}
+				>
+					<Picker.Item value="priority" label='Priority' />
+					<Picker.Item value="high" label='High' />
+					<Picker.Item value="medium" label='Medium' />
+					<Picker.Item value="low" label='Low' />
+				</Picker>
+				<Picker
+					selectedValue='daily'
+					onValueChange={(value)=>setFormData((prevFormData) => ({ ...prevFormData, repetitionType: value }))}
+				>
+					<Picker.Item value="daily" label='Daily'/>
+					<Picker.Item value="weekly" label={'Weekly (on every Tuesday)'} />
+					<Picker.Item value="monthly" label='Monthly (on 2nd)' />
+				</Picker>
+				{
+					isMeasurable?(
+						<>
+						<TextInput
+							placeholder='unit e.g. hours'
+							style={styles.textField}
+							onChangeText={(value)=>setFormData((prevFormData) => ({ ...prevFormData, unit: value }))}
+						/>
+						<TextInput
+							placeholder='target e.g. 8'
+							style={styles.textField}
+							onChangeText={(value)=>setFormData((prevFormData) => ({ ...prevFormData, target: value }))}
+						/>
+						</>
+					):(<></>)
+				}
 				<TouchableOpacity
 					activeOpacity={0.7}
 					style={styles.submitButton}
@@ -97,21 +97,25 @@ export default function CreateTask() {
 						size={20} 
 						color="black"
 					/>
-      	<Text style={styles.text}>Save</Text>
+				<Text style={styles.text}>Save</Text>
 			</TouchableOpacity>
-      </View> 
+			</View> 
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
 	heading: {
-    color: 'black',
+    color: 'gold',
+		backgroundColor:'crimson',
+		width:'100%',
+		textAlign:'center',
     fontSize: 30,
 		fontFamily: 'unicase',
-		left:20
+		borderTopStartRadius:50,
   },
 	textField:{
+		color:'gray',
 		borderWidth:1,
 		height:40,
 		paddingHorizontal:20,
@@ -158,7 +162,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
   },
 	item: {
-		paddingHorizontal: 10,
+		paddingHorizontal: 20,
 		paddingVertical: 10,
 		borderBottomWidth: 1,
 	},
