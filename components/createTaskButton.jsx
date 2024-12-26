@@ -1,14 +1,15 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { Link } from 'expo-router';
 import React from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-const CreateTaskButton = ({onPress}) => {
+const CreateTaskButton = () => {
   return (
     <View>
+    <Link href='/createTask'>
       <TouchableOpacity
         activeOpacity={0.7}
 				style={styles.createTaskButton}
-        onPress={onPress}
 			>
 				<MaterialIcons
 					style={{display:'flex',justifyContent:'center'}} 
@@ -18,7 +19,7 @@ const CreateTaskButton = ({onPress}) => {
 				/>
       <Text style={styles.text}>add Task</Text>
 			</TouchableOpacity>
-    </View>
+    </Link></View>
   )
 }
 

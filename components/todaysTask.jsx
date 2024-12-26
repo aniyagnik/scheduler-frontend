@@ -23,7 +23,7 @@ const TodaysTask = ({task,index,showModal,toggleCheck}) => {
           )
           :
           (
-            <TouchableOpacity  onpress={()=>toggleCheck(index)}>
+            <TouchableOpacity  onPress={()=>toggleCheck(index)}>
             <View style={{cursor:'pointer'}}>
               {task.isDone?
                 <Entypo name="check" size={24} color="green" style={styles.shadow}/>:

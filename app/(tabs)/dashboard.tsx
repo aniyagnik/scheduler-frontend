@@ -1,7 +1,6 @@
 
 import { Component } from 'react'
 import { Text, View, StyleSheet, TextInput } from 'react-native';
-import { Redirect } from 'expo-router';
 import CreateTaskButton from '@/components/createTaskButton'
 import TodaysTask from '@/components/todaysTask'
 import Modal from '@/components/modal'
@@ -12,6 +11,7 @@ class Dashboard extends Component {
 			{
 				_id:'0',
 				title: 'study',
+				priority:1,
 				score:5,
 				target:10,
 				isMeasurable:true, 
@@ -20,7 +20,8 @@ class Dashboard extends Component {
 			{
 				_id:'1',
 				title: 'sleep',
-				score:5,
+				priority:1,
+				score:4,
 				target:8,
 				isMeasurable:true, 
 				isDone:false,
@@ -28,14 +29,33 @@ class Dashboard extends Component {
 			{
 				_id:'2',
 				title: 'exercise', 
+				priority:1,
 				isMeasurable:false, 
+				score:0,
 				isDone:true
-			}, // last object of array has report of today
+			},
 			{
 				_id:'3',
+				title: 'meditate', 
+				priority:1,
+				isMeasurable:false, 
+				score:0,
+				isDone:false
+			},
+			{
+				_id:'4',
+				title: '10k', 
+				priority:1,
+				isMeasurable:false, 
+				score:0,
+				isDone:false
+			}, // last object of array has report of today
+			{
+				_id:'5',
 				title: 'completion', 
+				priority:1,
 				isMeasurable:true, 
-				score:40,
+				score:30,
 				target:50,
 				isDone:false
 			}
@@ -57,47 +77,40 @@ class Dashboard extends Component {
 	}
 
 	toggleTaskCheck = (index:number)=>{
-		const updatedTask = this.state.tasks[index]
-		updatedTask.isDone = !updatedTask.isDone
-		// code to alter score of last object on array based on prioritity
-		this.setState({
-			tasks : [
-				...this.state.tasks.splice(0,index),
-				updatedTask,
-				...this.state.tasks.splice(index+1),
-			]
-	  })
+		let newTasks = this.state.tasks
+		newTasks[index].isDone = !newTasks[index].isDone 
+		
+		if(newTasks[index].isDone) newTasks[newTasks.length-1].score+=10/newTasks[index].priority
+		else newTasks[newTasks.length-1].score-=10/newTasks[index].priority
+
+		this.setState({tasks : newTasks})
 	}
 
   render(){
     return (
 			<View style={styles.container}>
 				<Text style={styles.text}>Dashboard</Text>
-				<View style={{flexDirection:'column'}}>
-					{
-						this.state.tasks.map(
-							(task: any,index:number)=>{
-								return (
-									<TodaysTask 
-										key={index} 
-										index={index} 
-										task={task} 
-										showModal={this.showTaskEditModal} 
-										toggleCheck={this.toggleTaskCheck}
-									/>
-								)
-						})
-					}
-				</View>
-				<CreateTaskButton onPress={()=><Redirect href='/createTask'/>}/>
+				<View style={{flexDirection:'column'}}>{
+					this.state.tasks.map(
+						(task: any,index:number)=>{
+							return (
+								<TodaysTask 
+									key={index} 
+									index={index} 
+									task={task} 
+									showModal={this.showTaskEditModal} 
+									toggleCheck={this.toggleTaskCheck}
+								/>
+							)
+					})
+				}</View>
+				<CreateTaskButton/>
 				{
 					this.state.isModalVisible?(
 						<Modal task={this.state.currentTask} hideModal={this.hideTaskEditModal}/>
-					):(
-						<></>
-					)
+					):(<></>)
 				}
-			</View>
+				</View>
     )
   }
 }

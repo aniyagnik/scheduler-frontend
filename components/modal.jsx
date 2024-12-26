@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View,TextInput } from 'react-native';
+import { StyleSheet, Text, View,TextInput } from 'react-native';
 import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
 
 export default function Modal({task,hideModal}) {
