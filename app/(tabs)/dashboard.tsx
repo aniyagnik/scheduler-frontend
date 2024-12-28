@@ -32,6 +32,7 @@ class Dashboard extends Component {
 				priority:1,
 				isMeasurable:false, 
 				score:0,
+				target:1,
 				isDone:true
 			},
 			{
@@ -40,6 +41,7 @@ class Dashboard extends Component {
 				priority:1,
 				isMeasurable:false, 
 				score:0,
+				target:1,
 				isDone:false
 			},
 			{
@@ -48,6 +50,7 @@ class Dashboard extends Component {
 				priority:1,
 				isMeasurable:false, 
 				score:0,
+				target:1,
 				isDone:false
 			}, // last object of array has report of today
 			{
@@ -76,6 +79,16 @@ class Dashboard extends Component {
 		this.setState({isModalVisible:false})
 	}
 
+	updateTaskScore = (value:string,index:number) => {
+		let newTasks = this.state.tasks
+		const oldScore = newTasks[index].score
+		newTasks[index].score = parseInt(value)
+
+		newTasks[newTasks.length-1].score+=10/newTasks[index].priority*(newTasks[index].score-oldScore)/newTasks[index].target
+		
+		this.setState({tasks : newTasks})
+	}
+
 	toggleTaskCheck = (index:number)=>{
 		let newTasks = this.state.tasks
 		newTasks[index].isDone = !newTasks[index].isDone 
@@ -89,7 +102,7 @@ class Dashboard extends Component {
   render(){
     return (
 			<View style={styles.container}>
-				<Text style={styles.text}>Dashboard</Text>
+				<Text style={{paddingBottom:5}}>Your day includes...</Text>
 				<View style={{flexDirection:'column'}}>{
 					this.state.tasks.map(
 						(task: any,index:number)=>{
@@ -104,10 +117,9 @@ class Dashboard extends Component {
 							)
 					})
 				}</View>
-				<CreateTaskButton/>
 				{
 					this.state.isModalVisible?(
-						<Modal task={this.state.currentTask} hideModal={this.hideTaskEditModal}/>
+						<Modal task={this.state.currentTask} hideModal={this.hideTaskEditModal} updateScore={this.updateTaskScore}/>
 					):(<></>)
 				}
 				</View>
@@ -121,8 +133,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+		padding:10
   },
   text: {
     color: 'black',

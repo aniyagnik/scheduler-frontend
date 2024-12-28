@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View,TextInput } from 'react-native';
 import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
 
-export default function Modal({task,hideModal}) {
+export default function Modal({task,hideModal,updateScore}) {
   return (
     <Animated.View
       entering={FadeIn}
@@ -50,6 +50,7 @@ export default function Modal({task,hideModal}) {
 							<TextInput
 								value={task.score}
 								style={styles.textField}
+								onChangeText={(value)=>updateScore(value,index)}
 							/>
 						</View>
 						</View>
