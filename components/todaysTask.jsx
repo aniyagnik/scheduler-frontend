@@ -6,7 +6,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 
 const TodaysTask = ({task,index,showModal,toggleCheck}) => {
   return (
-    <View style={{flexDirection:'row',paddingVertical:5,paddingHorizontal:10,borderBottomWidth:1,justifyContent:'center'}}>
+    <View style={styles.todayTaskBox}>
       <View style={styles.title}><Text style={{fontSize:17}}>{task.title}</Text></View>
       <View>
         {task.isMeasurable?
@@ -46,6 +46,16 @@ const TodaysTask = ({task,index,showModal,toggleCheck}) => {
 export default TodaysTask
 
 const styles = StyleSheet.create({
+  todayTaskBox:{
+    flexDirection:'row',
+    paddingVertical:5,
+    paddingHorizontal:10,
+    justifyContent:'center',
+    backgroundColor:'white',
+    marginBottom:10,
+    borderRadius:20,
+    boxShadow:'inset -4px -4px 2px gray'
+  },
   title:{
     width:'80%'
   },

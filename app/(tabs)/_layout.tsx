@@ -54,9 +54,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="calender"
+        name="calendar"
         options={{
-          title: 'Calender',
+          title: 'Calendar',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'calendar-sharp' : 'calendar-outline'} color={color} size={24} />
           ),
@@ -67,7 +67,7 @@ export default function TabLayout() {
         options={{
           title: 'Setting',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'settings-outline' : 'settings-sharp'} color={color} size={24}/>
+            <Ionicons name={focused ? 'settings-sharp' : 'settings-outline'} color={color} size={24}/>
           ),
         }}
       />

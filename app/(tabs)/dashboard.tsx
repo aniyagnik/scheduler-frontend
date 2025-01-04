@@ -4,6 +4,7 @@ import { Text, View, StyleSheet } from 'react-native';
 import * as Progress from 'react-native-progress';
 import TodaysTask from '@/components/todaysTask'
 import Modal from '@/components/modal'
+import Animated, { FadeIn } from 'react-native-reanimated';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 class Dashboard extends Component {
@@ -53,19 +54,12 @@ class Dashboard extends Component {
 				score:0,
 				target:1,
 				isDone:false
-			}, // last object of array has report of today
-			{
-				_id:'5',
-				title: 'completion', 
-				priority:1,
-				isMeasurable:true, 
-				score:30,
-				target:50,
-				isDone:false
 			}
 		],
 		isModalVisible:false,
-		currentTask:{}
+		currentTask:{},
+		completionValue:30,
+		completionTarget:50,
 	}
 
 	showTaskEditModal = (index:number) => {
@@ -83,20 +77,26 @@ class Dashboard extends Component {
 	updateTaskScore = (value:string,index:number) => {
 		let newTasks = this.state.tasks
 		const oldScore = newTasks[index].score
-		newTasks[index].score = parseInt(value)
-
-		newTasks[newTasks.length-1].score+=10/newTasks[index].priority*(newTasks[index].score-oldScore)/newTasks[index].target
+		let newCompletionValue = this.state.completionValue
 		
+		newTasks[index].score = parseInt(value)
+		newCompletionValue+=10/newTasks[index].priority*(newTasks[index].score-oldScore)/newTasks[index].target
+		
+		if(newCompletionValue/this.state.completionTarget===1) console.log('sd')
+		this.setState({completionValue:newCompletionValue})
 		this.setState({tasks : newTasks})
 	}
 
 	toggleTaskCheck = (index:number)=>{
 		let newTasks = this.state.tasks
 		newTasks[index].isDone = !newTasks[index].isDone 
-		
-		if(newTasks[index].isDone) newTasks[newTasks.length-1].score+=10/newTasks[index].priority
-		else newTasks[newTasks.length-1].score-=10/newTasks[index].priority
+		let newCompletionValue = this.state.completionValue
 
+		if(newTasks[index].isDone) newCompletionValue+=10/newTasks[index].priority
+		else newCompletionValue-=10/newTasks[index].priority
+
+		if(newCompletionValue/this.state.completionTarget===1) console.log('sd')
+		this.setState({completionValue:newCompletionValue})
 		this.setState({tasks : newTasks})
 	}
 
@@ -119,6 +119,25 @@ class Dashboard extends Component {
 								)
 						})
 					}</View>
+				</View>
+				<View style={{margin:10}}>
+					{
+						this.state.completionValue/this.state.completionTarget<1?(
+              <Progress.Circle 
+								progress={this.state.completionValue/this.state.completionTarget}
+								style={{alignSelf:'center'}} 
+								color={'crimson'}
+								thickness={20} 
+								textStyle={{color:'gold',fontWeight:'bold',fontSize:30}} 
+								showsText={true} 
+								size={250}
+								strokeCap='round'
+							/>
+            ):(
+              <AntDesign style={{alignSelf:'center'}} name="checkcircle" size={240} color="green" />
+            )
+					}
+					
 				</View>
 				<View style={styles.contentBox}>
 					<Text style={styles.contentHead}>Report</Text>
@@ -150,6 +169,15 @@ class Dashboard extends Component {
 				<View style={styles.contentBox}>
 				<Text style={styles.contentHead}>You can do it...</Text>
 				</View>
+				{
+					this.state.completionValue/this.state.completionTarget===1?(
+						<Animated.View
+							entering={FadeIn}
+							style={styles.celebModal}
+						>
+						</Animated.View>
+					):(<></>)
+				}
 				{
 					this.state.isModalVisible?(
 						<Modal task={this.state.currentTask} hideModal={this.hideTaskEditModal} updateScore={this.updateTaskScore}/>
@@ -221,6 +249,19 @@ const styles = StyleSheet.create({
 		borderRadius:2,
 		boxShadow: 'inset 0 0 5px gray',
 		fontSize:15
+	},
+	celebModal:{
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: '#00000040',
+		backgroundImage:"url('https://cdn.pixabay.com/animation/2024/05/02/07/43/07-43-00-535_512.gif')",
+		width: '100%',
+		height: '100%',
+		position: 'fixed',
+		top: 0,
+		bottom: 0,
+		left: 0,
+		right: 0,
 	}
-	
 });
