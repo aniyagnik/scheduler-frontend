@@ -2,7 +2,8 @@ import { Tabs } from 'expo-router';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { View } from 'react-native';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { View,StyleSheet } from 'react-native';
 
 export default function TabLayout() {
   return (
@@ -12,11 +13,12 @@ export default function TabLayout() {
         headerStyle: {
           backgroundColor: 'whitesmoke',
         },
-        headerShadowVisible: false,
+        tabBarLabelPosition:'below-icon',
         headerTintColor: 'gray',
         tabBarStyle: {
         backgroundColor: 'whitesmoke',
         },
+        headerRight:(props:any)=><FontAwesome6 style={{marginRight:10}} {...props} name="user-tie" size={28} color="black" />
       }}
     >
       <Tabs.Screen
@@ -33,7 +35,7 @@ export default function TabLayout() {
         options={{
           title: 'Task',
           tabBarIcon: ({ color, focused }) => (
-            <View style={{borderWidth:3,borderColor:'whitesmoke',justifyContent:'center',alignItems:'center', marginBottom:40,height:50,width:50,backgroundColor:'gold',borderRadius:50}}>            
+            <View style={styles.taskIcon}>            
               <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} color={color} size={24}/>
             </View>
           ),
@@ -51,3 +53,17 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  taskIcon:{
+    borderWidth:8,
+    borderColor:'white',
+    justifyContent:'center',
+    alignItems:'center', 
+    marginBottom:50,
+    height:60,
+    width:60,
+    backgroundColor:'crimson',
+    borderRadius:60
+  }
+})

@@ -6,8 +6,8 @@ import { Link } from 'expo-router';
 
 const TodaysTask = ({task,index,showModal,toggleCheck}) => {
   return (
-    <View style={{flexDirection:'row',paddingVertical:5,borderBottomWidth:1}}>
-      <View style={styles.title}><Text>{task.title}</Text></View>
+    <View style={{flexDirection:'row',paddingVertical:5,paddingHorizontal:10,borderBottomWidth:1,justifyContent:'center'}}>
+      <View style={styles.title}><Text style={{fontSize:17}}>{task.title}</Text></View>
       <View>
         {task.isMeasurable?
           (
@@ -42,7 +42,6 @@ export default TodaysTask
 
 const styles = StyleSheet.create({
   title:{
-    color: 'crimson',
     width:'80%'
   },
   shadow: {

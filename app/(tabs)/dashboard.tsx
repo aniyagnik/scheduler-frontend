@@ -1,7 +1,7 @@
 
 import { Component } from 'react'
 import { Text, View, StyleSheet, TextInput } from 'react-native';
-import CreateTaskButton from '@/components/createTaskButton'
+import * as Progress from 'react-native-progress';
 import TodaysTask from '@/components/todaysTask'
 import Modal from '@/components/modal'
 
@@ -102,21 +102,46 @@ class Dashboard extends Component {
   render(){
     return (
 			<View style={styles.container}>
-				<Text style={{paddingBottom:5}}>Your day includes...</Text>
-				<View style={{flexDirection:'column'}}>{
-					this.state.tasks.map(
-						(task: any,index:number)=>{
-							return (
-								<TodaysTask 
-									key={index} 
-									index={index} 
-									task={task} 
-									showModal={this.showTaskEditModal} 
-									toggleCheck={this.toggleTaskCheck}
-								/>
-							)
-					})
-				}</View>
+				<View style={styles.contentBox}>
+					<Text style={styles.contentHead}>Your day includes...</Text>
+					<View style={{flexDirection:'column'}}>{
+						this.state.tasks.map(
+							(task: any,index:number)=>{
+								return (
+									<TodaysTask 
+										key={index} 
+										index={index} 
+										task={task} 
+										showModal={this.showTaskEditModal} 
+										toggleCheck={this.toggleTaskCheck}
+									/>
+								)
+						})
+					}</View>
+				</View>
+				<View style={styles.contentBox}>
+					<Text style={styles.contentHead}>Report</Text>
+					<View style={{flexDirection:'row',justifyContent:"space-around"}}>
+						{
+							[80,100,70,40,50,100].map((score,index)=>{
+								return (
+									<Progress.Circle 
+										key={index}
+										style={{cursor:'pointer'}}
+										progress={score/100} 
+										thickness={3} 
+										textStyle={{fontSize:9}} 
+										showsText={true} 
+										size={30}
+									/>
+								)
+							})
+						}
+					</View>
+				</View>
+				<View style={styles.contentBox}>
+				<Text style={styles.contentHead}>You can do it...</Text>
+				</View>
 				{
 					this.state.isModalVisible?(
 						<Modal task={this.state.currentTask} hideModal={this.hideTaskEditModal} updateScore={this.updateTaskScore}/>
@@ -136,9 +161,18 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
 		padding:10
   },
-  text: {
-    color: 'black',
-  },
+	contentBox:{
+		backgroundColor:'lightgray',
+		padding:20,
+		borderRadius:20,
+		opacity:0.7,
+		marginBottom:10
+	},
+	contentHead:{
+		fontSize:20,
+		fontWeight:'bold',
+		paddingBottom:10
+	},
 	modal:{
 		width:'100%',
 		backgroundColor:'crimson'
