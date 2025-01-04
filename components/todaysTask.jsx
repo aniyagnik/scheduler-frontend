@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import Entypo from '@expo/vector-icons/Entypo';
 import * as Progress from 'react-native-progress';
-import { Link } from 'expo-router';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const TodaysTask = ({task,index,showModal,toggleCheck}) => {
   return (
@@ -11,7 +11,9 @@ const TodaysTask = ({task,index,showModal,toggleCheck}) => {
       <View>
         {task.isMeasurable?
           (
+            task.score/task.target<1?(
               <Progress.Circle 
+                animated={false}
                 onClick={()=>showModal(index)} 
                 style={{cursor:'pointer'}}
                 progress={task.score/task.target} 
@@ -20,6 +22,9 @@ const TodaysTask = ({task,index,showModal,toggleCheck}) => {
                 showsText={true} 
                 size={30}
               />
+            ):(
+              <AntDesign name="checkcircle" size={28} color="green" />
+            )
           )
           :
           (

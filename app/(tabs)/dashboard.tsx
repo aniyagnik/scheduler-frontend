@@ -1,9 +1,10 @@
 
 import { Component } from 'react'
-import { Text, View, StyleSheet, TextInput } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import * as Progress from 'react-native-progress';
 import TodaysTask from '@/components/todaysTask'
 import Modal from '@/components/modal'
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 class Dashboard extends Component {
 	state = {
@@ -21,7 +22,7 @@ class Dashboard extends Component {
 				_id:'1',
 				title: 'sleep',
 				priority:1,
-				score:4,
+				score:8,
 				target:8,
 				isMeasurable:true, 
 				isDone:false,
@@ -124,11 +125,18 @@ class Dashboard extends Component {
 					<View style={{flexDirection:'row',justifyContent:"space-around"}}>
 						{
 							[80,100,70,40,50,100].map((score,index)=>{
-								return (
+								if(score==100){
+									return (
+										<AntDesign name="checkcircle" size={28} color="green" />
+									)
+								}
+								else return (
 									<Progress.Circle 
+										animated={false}
 										key={index}
 										style={{cursor:'pointer'}}
 										progress={score/100} 
+										color={'red'}
 										thickness={3} 
 										textStyle={{fontSize:9}} 
 										showsText={true} 

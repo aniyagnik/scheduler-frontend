@@ -16,7 +16,8 @@ export default function TabLayout() {
         tabBarLabelPosition:'below-icon',
         headerTintColor: 'gray',
         tabBarStyle: {
-        backgroundColor: 'whitesmoke',
+          borderTopColor:'whitesmoke',
+          backgroundColor: 'whitesmoke',
         },
         headerRight:(props:any)=><FontAwesome6 style={{marginRight:10}} {...props} name="user-tie" size={28} color="black" />
       }}
@@ -31,22 +32,42 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="progress"
+        options={{
+          title: 'progress',
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons name={focused ? 'progress-check' : 'progress-clock'} color={color} size={24} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="createTask"
         options={{
           title: 'Task',
           tabBarIcon: ({ color, focused }) => (
-            <View style={styles.taskIcon}>            
-              <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} color={color} size={24}/>
+            <View style={styles.outerTaskIcon}>
+              <View style={styles.taskIcon}>
+                <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} color={color} size={24}/>
+              </View>            
             </View>
           ),
         }}
       />
       <Tabs.Screen
-        name="about"
+        name="calender"
         options={{
-          title: 'About',
+          title: 'Calender',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'information-circle' : 'information-circle-outline'} color={color} size={24}/>
+            <Ionicons name={focused ? 'calendar-sharp' : 'calendar-outline'} color={color} size={24} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Setting',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'settings-outline' : 'settings-sharp'} color={color} size={24}/>
           ),
         }}
       />
@@ -55,15 +76,28 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  taskIcon:{
-    borderWidth:8,
-    borderColor:'white',
-    justifyContent:'center',
-    alignItems:'center', 
+  outerTaskIcon:{
     marginBottom:50,
-    height:60,
-    width:60,
+    justifyContent:'center',
+    alignItems:'center',
+    height:70,
+    width:70,
+    backgroundColor:'white',
+    borderRadius:80,
+  },
+  taskIcon:{ 
+    justifyContent:'center',
+    alignItems:'center',
+    height:50,
+    width:50,
+    color:'white',
     backgroundColor:'crimson',
-    borderRadius:60
+    borderRadius:50,
+    boxShadow:'-2px -2px 8px crimson, 2px 2px 8px red, inset 2px 2px 10px crimson, inset -2px -2px 10px red'
+  },
+  'taskIcon_hover':{
+    boxShadow: '-2px -2px 8px crimson, 2px 2px 8px red, inset 2px 2px 10px red, inset -2px -2px 10px crimson',
+	  transitionDuration:'500ms',
+    color: '#93f071',
   }
 })
