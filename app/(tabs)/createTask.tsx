@@ -33,7 +33,7 @@ export default function CreateTask() {
 				}}
 				resizeMode='cover'  
 				/>
-			<View style={{padding:20,gap:20,}}>
+			<View style={{padding:20,gap:20,backgroundColor:'white'}}>
 				<Text style={styles.heading}>Create Task</Text>
 				<TextInput
 					placeholder='title'
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
 		textAlign:'center',
     fontSize: 30,
 		fontFamily: 'unicase',
-		borderTopStartRadius:50,
+		borderTopLeftRadius:40
   },
 	textField:{
 		color:'gray',

@@ -1,11 +1,11 @@
-
 import { Component } from 'react'
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet,ScrollView, Dimensions } from 'react-native';
 import * as Progress from 'react-native-progress';
 import TodaysTask from '@/components/todaysTask'
 import Modal from '@/components/modal'
 import Animated, { FadeIn } from 'react-native-reanimated';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { ProgressChart } from 'react-native-chart-kit';
 
 class Dashboard extends Component {
 	state = {
@@ -48,7 +48,7 @@ class Dashboard extends Component {
 			},
 			{
 				_id:'4',
-				title: '10k', 
+				title: '10k steps', 
 				priority:1,
 				isMeasurable:false, 
 				score:0,
@@ -60,8 +60,9 @@ class Dashboard extends Component {
 		currentTask:{},
 		completionValue:30,
 		completionTarget:50,
+		showCompletion:false
 	}
-
+	
 	showTaskEditModal = (index:number) => {
 		console.log('show modal',index)
 		this.setState({currentTask:this.state.tasks[index]})
@@ -102,6 +103,7 @@ class Dashboard extends Component {
 
   render(){
     return (
+			<ScrollView>
 			<View style={styles.container}>
 				<View style={styles.contentBox}>
 					<Text style={styles.contentHead}>Your day includes...</Text>
@@ -120,57 +122,77 @@ class Dashboard extends Component {
 						})
 					}</View>
 				</View>
-				<View style={{margin:10}}>
+				<View>
 					{
 						this.state.completionValue/this.state.completionTarget<1?(
-              <Progress.Circle 
-								progress={this.state.completionValue/this.state.completionTarget}
-								style={{alignSelf:'center'}} 
-								color={'crimson'}
-								thickness={20} 
-								textStyle={{color:'gold',fontWeight:'bold',fontSize:30}} 
-								showsText={true} 
-								size={250}
-								strokeCap='round'
-							/>
+              <ProgressChart
+									data={{labels:['as'],data:[this.state.completionValue/this.state.completionTarget]}}
+									width={Dimensions.get("window").width*0.8}
+									height={Dimensions.get("window").height/3}
+									strokeWidth={40}
+									radius={Dimensions.get("window").width/5}
+									chartConfig={{
+										backgroundGradientFrom: "white",
+										backgroundGradientFromOpacity: 0,
+										backgroundGradientTo: "whitesmoke",
+										backgroundGradientToOpacity: 0.5,
+										color: (opacity = 1) => `rgba(0,0,0, ${opacity})`,
+										strokeWidth: 2, // optional, default 3
+										barPercentage: 0.5,
+										useShadowColorFromDataset: false // optional
+									}}
+									style={{alignSelf:'center'}}
+									hideLegend={true}
+								/>
+							// <Progress.Circle 
+							// 	progress={this.state.completionValue/this.state.completionTarget}
+							// 	style={{alignSelf:'center'}} 
+							// 	color={'crimson'}
+							// 	thickness={20} 
+							// 	textStyle={{color:'gold',fontWeight:'bold',fontSize:30}} 
+							// 	showsText={true} 
+							// 	size={250}
+							// 	strokeCap='round'
+							// />
             ):(
-              <AntDesign style={{alignSelf:'center'}} name="checkcircle" size={240} color="green" />
+              <AntDesign 
+								style={{alignSelf:'center',margin:25}} 
+								name="checkcircle" 
+								size={Dimensions.get("window").width/2} 
+								color="green" 
+							/>
             )
-					}
-					
+					}			
 				</View>
 				<View style={styles.contentBox}>
 					<Text style={styles.contentHead}>Report</Text>
-					<View style={{flexDirection:'row',justifyContent:"space-around"}}>
-						{
-							[80,100,70,40,50,100].map((score,index)=>{
-								if(score==100){
-									return (
-										<AntDesign name="checkcircle" size={28} color="green" />
-									)
-								}
-								else return (
-									<Progress.Circle 
-										animated={false}
-										key={index}
-										style={{cursor:'pointer'}}
-										progress={score/100} 
-										color={'red'}
-										thickness={3} 
-										textStyle={{fontSize:9}} 
-										showsText={true} 
-										size={30}
-									/>
+					<View style={{flexDirection:'row',justifyContent:"space-around"}}>{
+						[80,100,70,40,50,100,20].map((score,index)=>{
+							if(score==100){
+								return (
+									<AntDesign name="checkcircle" size={28} color="green" />
 								)
-							})
-						}
-					</View>
+							}
+							else return (
+								<Progress.Circle 
+									animated={false}
+									key={index}
+									style={{cursor:'pointer'}}
+									progress={score/100} 
+									color={'red'}
+									thickness={4} 
+									textStyle={{fontSize:9}} 
+									showsText={true} 
+									size={33}
+								/>
+							)
+						})
+					}</View>
 				</View>
 				<View style={styles.contentBox}>
-				<Text style={styles.contentHead}>You can do it...</Text>
-				</View>
-				{
-					this.state.completionValue/this.state.completionTarget===1?(
+					<Text style={styles.contentHead}>You can do it...</Text>
+				</View>{
+					(this.state.completionValue/this.state.completionTarget===2)?(
 						<Animated.View
 							entering={FadeIn}
 							style={styles.celebModal}
@@ -183,7 +205,8 @@ class Dashboard extends Component {
 						<Modal task={this.state.currentTask} hideModal={this.hideTaskEditModal} updateScore={this.updateTaskScore}/>
 					):(<></>)
 				}
-				</View>
+			</View>
+			</ScrollView>
     )
   }
 }
