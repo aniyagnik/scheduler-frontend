@@ -1,11 +1,10 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import { Text, View, StyleSheet,ScrollView, Dimensions } from 'react-native';
 import * as Progress from 'react-native-progress';
 import TodaysTask from '@/components/todaysTask'
 import Modal from '@/components/modal'
 import Animated, { FadeIn } from 'react-native-reanimated';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { ProgressChart } from 'react-native-chart-kit';
 
 class Dashboard extends Component {
 	state = {
@@ -21,7 +20,7 @@ class Dashboard extends Component {
 			},
 			{
 				_id:'1',
-				title: 'sleep',
+				title: 'game',
 				priority:1,
 				score:8,
 				target:8,
@@ -121,48 +120,6 @@ class Dashboard extends Component {
 								)
 						})
 					}</View>
-				</View>
-				<View>
-					{
-						this.state.completionValue/this.state.completionTarget<1?(
-              <ProgressChart
-									data={{labels:['as'],data:[this.state.completionValue/this.state.completionTarget]}}
-									width={Dimensions.get("window").width*0.8}
-									height={Dimensions.get("window").height/3}
-									strokeWidth={40}
-									radius={Dimensions.get("window").width/5}
-									chartConfig={{
-										backgroundGradientFrom: "white",
-										backgroundGradientFromOpacity: 0,
-										backgroundGradientTo: "whitesmoke",
-										backgroundGradientToOpacity: 0.5,
-										color: (opacity = 1) => `rgba(0,0,0, ${opacity})`,
-										strokeWidth: 2, // optional, default 3
-										barPercentage: 0.5,
-										useShadowColorFromDataset: false // optional
-									}}
-									style={{alignSelf:'center'}}
-									hideLegend={true}
-								/>
-							// <Progress.Circle 
-							// 	progress={this.state.completionValue/this.state.completionTarget}
-							// 	style={{alignSelf:'center'}} 
-							// 	color={'crimson'}
-							// 	thickness={20} 
-							// 	textStyle={{color:'gold',fontWeight:'bold',fontSize:30}} 
-							// 	showsText={true} 
-							// 	size={250}
-							// 	strokeCap='round'
-							// />
-            ):(
-              <AntDesign 
-								style={{alignSelf:'center',margin:25}} 
-								name="checkcircle" 
-								size={Dimensions.get("window").width/2} 
-								color="green" 
-							/>
-            )
-					}			
 				</View>
 				<View style={styles.contentBox}>
 					<Text style={styles.contentHead}>Report</Text>
