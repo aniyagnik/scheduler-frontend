@@ -105,7 +105,12 @@ class Dashboard extends Component {
     this.setState({ isModalVisible: false });
   };
 
-  updateTaskScore = (value: string, index: number) => {
+  updateTaskRemarks = (value: string, index: number) => {
+		let newTasks = this.state.tasks;
+		newTasks[index].remarks = value
+		this.setState({tasks:newTasks})
+	}
+	updateTaskScore = (value: string, index: number) => {
     let newTasks = this.state.tasks;
     const oldScore = newTasks[index].score;
     let newCompletionValue = this.state.completionValue;
@@ -116,7 +121,6 @@ class Dashboard extends Component {
       newTasks[index].target;
 
     if (newCompletionValue / this.state.completionTarget === 1)
-      console.log("sd");
     this.setState({ completionValue: newCompletionValue });
     this.setState({ tasks: newTasks });
   };
@@ -157,33 +161,6 @@ class Dashboard extends Component {
             </View>
           </View>
           <View style={styles.contentBox}>
-            <Text style={styles.contentHead}>Report</Text>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-around" }}
-            >
-              {[80, 100, 70, 40, 50, 100, 20].map((score, index) => {
-                if (score == 100) {
-                  return (
-                    <AntDesign key={index} name="checkcircle" size={28} color="green" />
-                  );
-                } else
-                  return (
-                    <Progress.Circle
-                      animated={false}
-                      key={index}
-                      style={{ cursor: "pointer" }}
-                      progress={score / 100}
-                      color={"red"}
-                      thickness={4}
-                      textStyle={{ fontSize: 9 }}
-                      showsText={true}
-                      size={33}
-                    />
-                  );
-              })}
-            </View>
-          </View>
-          <View style={styles.contentBox}>
             <Text style={styles.contentHead}>You can do it...</Text>
           </View>
           {this.state.completionValue / this.state.completionTarget === 2 ? (
@@ -199,6 +176,7 @@ class Dashboard extends Component {
               task={this.state.currentTask}
               hideModal={this.hideTaskEditModal}
               updateScore={this.updateTaskScore}
+							updateRemarks={this.updateTaskRemarks}
             />
           ) : (
             <></>

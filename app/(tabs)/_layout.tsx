@@ -2,7 +2,6 @@ import { Tabs } from 'expo-router';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { View,StyleSheet } from 'react-native';
 
 export default function TabLayout() {
@@ -19,7 +18,6 @@ export default function TabLayout() {
           borderTopColor:'whitesmoke',
           backgroundColor: 'whitesmoke',
         },
-        headerRight:(props:any)=><FontAwesome6 style={{marginRight:10}} {...props} name="user-tie" size={28} color="black" />
       }}
     >
       <Tabs.Screen
@@ -28,15 +26,6 @@ export default function TabLayout() {
           title: 'Dashboard',
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons name={focused ? 'view-dashboard' : 'view-dashboard-outline'} color={color} size={24} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="progress"
-        options={{
-          title: 'progress',
-          tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons name={focused ? 'progress-check' : 'progress-clock'} color={color} size={24} />
           ),
         }}
       />
@@ -59,15 +48,6 @@ export default function TabLayout() {
           title: 'Calendar',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'calendar-sharp' : 'calendar-outline'} color={color} size={24} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'Setting',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'settings-sharp' : 'settings-outline'} color={color} size={24}/>
           ),
         }}
       />

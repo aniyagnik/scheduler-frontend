@@ -62,7 +62,12 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
                 size={30}
               />
             ) : (
-              <AntDesign name="checkcircle" size={28} color="green" />
+              <AntDesign
+                onClick={() => showModal(index)}
+                name="checkcircle"
+                size={28}
+                color="green"
+              />
             )
           ) : (
             <TouchableOpacity onPress={() => toggleCheck(index)}>
@@ -93,8 +98,11 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
         />
       </View>
       <View style={styles.streak}>
-        {streak.map((item) => (
-          <View style={styles.streakItem} key={item.date}>
+        {streak.map((item,index) => (
+          <View
+            style={[styles.streakItem, { backgroundColor: index%2==0?"rgb(248, 222, 222)":"rgb(255, 225, 225)" }]}
+            key={item.date}
+          >
             <Text style={{ fontSize: 11, alignSelf: "center" }}>
               {item.value ? (
                 item.value
@@ -159,11 +167,13 @@ const styles = StyleSheet.create({
     backgroundColor: "whitesmoke",
     borderRadius: 10,
     width: 40,
+    boxShadow: "0px 0px 3px gray",
   },
   date: {
+    padding:2,
     justifyContent: "center",
     alignSelf: "center",
-    backgroundColor: "white",
+    backgroundColor: "rgb(255, 255, 255)",
     opacity: 0.6,
     borderRadius: 5,
   },
