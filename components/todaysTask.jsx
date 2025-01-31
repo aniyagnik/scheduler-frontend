@@ -3,6 +3,7 @@ import React from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as Progress from "react-native-progress";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { Link } from 'expo-router';
 
 const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
   const streak = [
@@ -91,16 +92,18 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
             </TouchableOpacity>
           )}
         </View>
-        <AntDesign
-          name="caretdown"
-          size={24}
-          color={task.subTasks.length == 0 ? "gray" : "black"}
-        />
+         <Link href="/statistics">
+          <AntDesign
+            name="caretdown"
+            size={24}
+            color={task.subTasks.length == 0 ? "gray" : "black"}
+          />
+        </Link>
       </View>
       <View style={styles.streak}>
         {streak.map((item,index) => (
           <View
-            style={[styles.streakItem, { backgroundColor: index%2==0?"rgb(248, 222, 222)":"rgb(255, 225, 225)" }]}
+            style={[styles.streakItem, { backgroundColor: index%2==0?"rgb(118, 255, 143)":"rgb(246, 250, 122)" }]}
             key={item.date}
           >
             <Text style={{ fontSize: 11, alignSelf: "center" }}>
@@ -116,8 +119,8 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
               )}
             </Text>
             <View style={styles.date}>
-              <Text style={{ fontSize: 9, lineHeight: 5 }}>{item.date}</Text>
-              <Text style={{ fontSize: 9 }}>{item.month}</Text>
+              <Text style={{ alignSelf:'center',fontSize: 9, lineHeight: 5 }}>{item.date}</Text>
+              <Text style={{ alignSelf:'center',fontSize: 9 }}>{item.month}</Text>
             </View>
           </View>
         ))}
@@ -163,14 +166,17 @@ const styles = StyleSheet.create({
   streakItem: {
     borderWidth: 1,
     paddingHorizontal: 2,
-    paddingVertical: 4,
+    paddingTop: 4,
     backgroundColor: "whitesmoke",
+    borderTopRightRadius:20,
+    borderTopLeftRadius:20,
     borderRadius: 10,
     width: 40,
     boxShadow: "0px 0px 3px gray",
   },
   date: {
-    padding:2,
+    width:'100%',
+    padding:4,
     justifyContent: "center",
     alignSelf: "center",
     backgroundColor: "rgb(255, 255, 255)",
