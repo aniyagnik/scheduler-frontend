@@ -3,6 +3,7 @@ import React from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as Progress from "react-native-progress";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Link } from 'expo-router';
 
 const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
@@ -93,11 +94,7 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
           )}
         </View>
          <Link href="/statistics">
-          <AntDesign
-            name="caretdown"
-            size={24}
-            color={task.subTasks.length == 0 ? "gray" : "black"}
-          />
+         <Ionicons name="stats-chart" size={24} color="black" />
         </Link>
       </View>
       <View style={styles.streak}>
