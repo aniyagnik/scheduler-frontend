@@ -3,82 +3,14 @@ import {
   StyleSheet,
   ScrollView,
   Text,
-  TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-import Entypo from "@expo/vector-icons/Entypo";
-import { BarChart, ContributionGraph } from "react-native-chart-kit";
+import { ContributionGraph } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
-
+import TaskInfoTable from '@/components/taskInfoTable'
+import TaskHistorGraph from '@/components/taskHistoryGraph'
 export default function Statistics() {
-  const tableData = [
-    {
-      date: "12/12/21",
-      score: "2.6",
-      isDone: false,
-      remarks: "this is a note.",
-    },
-    {
-      date: "12/12/21",
-      score: "2.2",
-      isDone: false,
-      remarks: "this is a note.",
-    },
-    {
-      date: "12/12/21",
-      score: "2.2",
-      isDone: false,
-      remarks: "this is a notjsdkfhksdjfhe.",
-    },
-    {
-      date: "12/12/21",
-      score: "2.2",
-      isDone: false,
-      remarks: "this is a note.",
-    },
-    {
-      date: "12/12/21",
-      score: "2.2",
-      isDone: false,
-      remarks: "this is a note.",
-    },
-    {
-      date: "12/12/21",
-      score: "2.2",
-      isDone: false,
-      remarks: "this is a note.",
-    },
-    {
-      date: "12/12/21",
-      score: "2.2",
-      isDone: false,
-      remarks: "this is a note.",
-    },
-    {
-      date: "12/12/21",
-      score: "2.2",
-      isDone: false,
-      remarks: "this is a note.",
-    },
-    {
-      date: "12/12/21",
-      score: "2.2",
-      isDone: false,
-      remarks: "this is a note.",
-    },
-    {
-      date: "12/12/21",
-      score: "2.2",
-      isDone: false,
-      remarks: "this is a note.",
-    },
-    {
-      date: "12/12/21",
-      score: "2.2",
-      isDone: false,
-      remarks: "this is a note.",
-    },
-  ];
+  
   const streakInfo = [
     {
       streakDays: 20,
@@ -109,20 +41,7 @@ export default function Statistics() {
   const labels = {
     week: ["Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"],
     month: Array.from(Array(30)).map((e, i) => (i + 1).toString()),
-    year: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+    year: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
   };
 
   const barWidthValue = [1,0.2,0.5]
@@ -206,129 +125,11 @@ export default function Statistics() {
         </View>
         <View style={styles.container}>
           <Text style={styles.containerTitle}>Task Info</Text>
-          <ScrollView>
-            <View style={styles.table}>
-              <View
-                style={[
-                  styles.row,
-                  { backgroundColor: "crimson", borderWidth: 0 },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.col,
-                    { color: "white", minWidth: "20%", fontWeight: "bold" },
-                  ]}
-                >
-                  Date
-                </Text>
-                <Text
-                  style={[
-                    styles.col,
-                    { color: "white", minWidth: "20%", fontWeight: "bold" },
-                  ]}
-                >
-                  score
-                </Text>
-                <Text
-                  style={[
-                    styles.col,
-                    { color: "white", minWidth: "60%", fontWeight: "bold" },
-                  ]}
-                >
-                  remarks
-                </Text>
-              </View>
-              <View
-                style={{
-                  maxHeight: 210,
-                  overflowY: "scroll",
-                }}
-              >
-                {tableData.map((row, index) => (
-                  <View
-                    style={[
-                      styles.row,
-                      {
-                        backgroundColor:
-                          index % 2 == 0
-                            ? "rgb(210, 210, 210)"
-                            : "rgb(240, 240, 240)",
-                      },
-                    ]}
-                    key={index}
-                  >
-                    <Text style={[styles.col, { minWidth: "20%" }]}>
-                      {row.date}
-                    </Text>
-                    <Text style={[styles.col, { minWidth: "20%" }]}>
-                      {row.score ? (
-                        row.score
-                      ) : (
-                        <Entypo
-                          name={row.isDone ? "check" : "cross"}
-                          size={24}
-                          color={row.isDone ? "green" : "gray"}
-                        />
-                      )}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.col,
-                        {
-                          minWidth: "60%",
-                          maxWidth: "60%",
-                        },
-                      ]}
-                    >
-                      {row.remarks}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          </ScrollView>
+          <TaskInfoTable/>
         </View>
         <View style={styles.container}>
           <Text style={styles.containerTitle}>Report</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignContent: "center",
-            }}
-          >
-            {["Week", "Month", "Year"].map((item) => (
-              <TouchableOpacity onPress={() => handleXView(item)} key={item}>
-                <View
-                  style={{
-                    marginBottom: 10,
-                    paddingVertical: 5,
-                    width: screenWidth / 5,
-                    backgroundColor: "crimson",
-                    justifyContent: "center",
-                    alignContent: "center",
-                    borderRadius: 20,
-                    boxShadow:'2px 0px 5px 0px gray'
-                  }}
-                >
-                  <Text style={styles.buttonText}>{item}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-          <View style={styles.chart}>
-            <BarChart
-              data={reportData}
-              width={0.95*screenWidth}
-              height={200}
-              yAxisLabel=""
-              yAxisSuffix=""
-              chartConfig={chartConfig}
-              showBarTops={false}
-              fromZero={true}
-            />
-          </View>
+          <TaskHistorGraph chartConfig={chartConfig} data={reportData} onPress={handleXView}/>
         </View>
         <View style={styles.container}>
           <Text style={styles.containerTitle}>Calender</Text>
@@ -370,26 +171,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 5,
   },
-  table: {
-    minWidth: "100%",
-    width: "auto",
-    justifyContent: "flex-start",
-    alignContent: "stretch",
-  },
-  col: {
-    padding: 10,
-    fontSize: 15,
-    display: "flex",
-    justifyContent: "center",
-    wordWrap: "anywhere",
-  },
-  row: {
-    borderRadius: 10,
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignContent: "stretch",
-  },
   streakStat: {
     backgroundColor: "rgb(220,220,220)",
     borderRadius: 10,
@@ -426,20 +207,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 20,
   },
-  chart: {
-    maxWidth: "100%",
-    overflowX: "scroll",
-  },
   calender: {
     maxWidth: "100%",
     overflowX: "scroll",
-  },
-  buttonText: {
-    display: "flex",
-    color: "white",
-    fontSize: 15,
-    fontWeight: "bold",
-    justifyContent: "center",
   },
 });
 
