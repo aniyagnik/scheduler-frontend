@@ -1,97 +1,164 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import React, { useState } from "react";
-import TaskType from "@/components/taskType";
-import TaskDetails from "@/components/taskDetails";
-import HabitFrequency from "@/components/habitFrequency";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Picker } from "@react-native-picker/picker";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
-export default function CreateTask() {
-  const [slideNumber, setSlideNumber] = useState(1);
+const TaskDetails = () => {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    priority: "",
+    repetitionType: "daily",
+    date: new Date(),
+    isMeasurable: 0,
+    unit: "",
+    target: "",
+  });
 
-  const handleNavigation = (change: number) => {
-    console.log(slideNumber + change);
-    if (slideNumber + change > 3 || slideNumber + change < 1) return;
-    else setSlideNumber(slideNumber + change);
+	const router = useRouter();
+  const submitForm = () => {
+    console.log(formData);
+    alert("submit form");
+    //router.navigate("/dashboard");
   };
   return (
-    <ScrollView style={{ flex: 1 }}>
-      <View style={styles.dashboard}>
-        {slideNumber === 1 ? (
-          <TaskType />
-        ) : slideNumber === 2 ? (
-          <TaskDetails />
-        ) : slideNumber === 3 ? (
-          <HabitFrequency />
-        ) : slideNumber === 4 ? (
-          <></>
-        ) : (
-          <></>
-        )}
-        <View style={styles.navigation}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.loginButton}
-            onPress={() => handleNavigation(-1)}
-          >
-            <MaterialIcons
-              style={{ display: "flex", justifyContent: "center" }}
-              name="arrow-back-ios"
-              size={24}
-              color="white"
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.loginButton}
-            onPress={() => handleNavigation(+1)}
-          >
-            <MaterialIcons
-              style={{ display: "flex", justifyContent: "center" }}
-              name="arrow-forward-ios"
-              size={24}
-              color="white"
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
+    <View style={styles.createTask}>
+      <Text style={styles.heading}>Elaborate your habit </Text>
+      <TextInput
+        placeholder="title"
+        style={styles.textField}
+        onChangeText={(value) =>
+          setFormData((prevFormData) => ({ ...prevFormData, title: value }))
+        }
+      />
+      <TextInput
+        placeholder="description (optional)"
+        style={styles.textField}
+        onChangeText={(value)=>setFormData((prevFormData) => ({ ...prevFormData, description: value }))}
+      />
+      <Picker
+        style={styles.picker}
+        selectedValue={formData.isMeasurable}
+        onValueChange={(value) => {
+          const val = value == 1 ? true : false;
+          return setFormData((prevFormData) => ({
+            ...prevFormData,
+            isMeasurable: value,
+          }));
+        }}
+      >
+        <Picker.Item label="Track progress by.." value={0} />
+        <Picker.Item label="measurable" value={1} />
+        <Picker.Item label="yes or no" value={2} />
+      </Picker>
+      <Picker
+        style={styles.picker}
+        selectedValue="daily"
+        onValueChange={(value) =>
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            repetitionType: value,
+          }))
+        }
+      >
+        <Picker.Item value="daily" label="Daily" />
+        <Picker.Item value="weekly" label={"Weekly (on every Tuesday)"} />
+        <Picker.Item value="monthly" label="Monthly (on 2nd)" />
+      </Picker>
+			<View>
+			<label htmlFor="date">Start date</label>
+			<input type="date" id="date" aria-describedby="date-format" min="2021-03-01" max="2031-01-01" />
+			</View>
+      {formData.isMeasurable==1 ? (
+        <>
+          <TextInput
+            placeholder="unit e.g. hours"
+            style={styles.textField}
+            onChangeText={(value) =>
+              setFormData((prevFormData) => ({ ...prevFormData, unit: value }))
+            }
+          />
+          <TextInput
+            placeholder="target e.g. 8"
+            style={styles.textField}
+            onChangeText={(value) =>
+              setFormData((prevFormData) => ({
+                ...prevFormData,
+                target: value,
+              }))
+            }
+          />
+        </>
+      ) : (
+        <></>
+      )}
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={styles.submitButton}
+        onPress={submitForm}
+      >
+        <MaterialIcons
+          style={{ display: "flex", justifyContent: "center" }}
+          name="add"
+          size={20}
+          color="black"
+        />
+        <Text style={styles.text}>Save</Text>
+      </TouchableOpacity>
+    </View>
   );
-}
+};
+
+export default TaskDetails;
 
 const styles = StyleSheet.create({
-  dashboard: {
-    display: "flex",
-    flexDirection: "column",
-    height: 800,
-    justifyContent: "space-around",
-    padding: 20,
-    gap: 20,
-    backgroundColor: "white",
+	createTask:{
+		display:'flex',
+		flexDirection:'column',
+    padding:20,
+    justifyContent:'space-around',
+		gap:20
+	},
+  heading: {
+    color: "white",
+    paddingVertical:5,
+    backgroundColor:'blue',
+    width: "100%",
+    textAlign: "center",
+    fontSize: 20,
+    fontFamily: "unicase",
+    borderTopLeftRadius: 40,
   },
-  loginButton: {
-    display: "flex",
+  picker: {
+    backgroundColor:'lightgray',
+    padding:10,
+    boxShadow: "0 0 2px gray",
+    color:'gray'
+  },
+  textField: {
+    backgroundColor:'lightgray',
+    color: "gray",
+    height: 40,
+    paddingHorizontal: 10,
+    borderRadius: 2,
+    boxShadow: "inset 0 0 5px gray",
+  },
+  submitButton: {
     justifyContent: "center",
     flexDirection: "row",
-    paddingHorizontal: 10,
+    paddingHorizontal: 24,
     paddingVertical: 5,
     borderRadius: 5,
-    borderColor: "black",
-    backgroundColor: "crimson",
+    boxShadow: "0 2px 2px gray",
+    backgroundColor: "whitesmoke",
     margin: 10,
-  },
-  navigation: {
-    display: "flex",
-    justifyContent: "space-between",
-    flexDirection: "row",
-  },
-  wrapper: {
-    backgroundColor: "crimson",
-    height: 30,
-    width: 30,
-    borderRadius: 30,
-    justifyContent: "center",
-    right: 20,
   },
   text: {
     display: "flex",
@@ -100,12 +167,26 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "black",
   },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    height: 50,
+    paddingHorizontal: 10,
+    zIndex: 1,
+  },
+  buttonText: {
+    flex: 1,
+    textAlign: "center",
+  },
+  dropdown: {
+    position: "absolute",
+    backgroundColor: "#fff",
+    width: "100%",
+  },
+  item: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+  },
 });
-
-// const fields = [
-// 	{id:'title',placeholder:'enter task name'},
-// 	{id:'description',placeholder:'enter description'},
-// 	{id:'unit',placeholder:'enter units'},
-// 	{id:'target',placeholder:'set target to achieve'},
-// 	{id:,placeholder:}
-// ]

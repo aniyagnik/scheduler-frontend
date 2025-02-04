@@ -79,14 +79,14 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
                     name="check"
                     size={24}
                     color="green"
-                    style={styles.shadow}
+                    
                   />
                 ) : (
                   <Entypo
                     name="cross"
                     size={24}
                     color="gray"
-                    style={styles.shadow}
+                    
                   />
                 )}
               </View>
@@ -103,7 +103,7 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
             style={[styles.streakItem, { backgroundColor: index%2==0?"rgb(118, 255, 143)":"rgb(246, 250, 122)" }]}
             key={item.date}
           >
-            <Text style={{ fontSize: 11, alignSelf: "center" }}>
+            <Text style={{ fontSize: 13, alignSelf: "center" }}>
               {item.value ? (
                 item.value
               ) : (
@@ -111,13 +111,13 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
                   name={item.isDone ? "check" : "cross"}
                   size={15}
                   color={item.isDone ? "green" : "gray"}
-                  style={styles.shadow}
+                  
                 />
               )}
             </Text>
             <View style={styles.date}>
-              <Text style={{ alignSelf:'center',fontSize: 9, lineHeight: 5 }}>{item.date}</Text>
-              <Text style={{ alignSelf:'center',fontSize: 9 }}>{item.month}</Text>
+              <Text style={{ alignSelf:'center',fontSize: 12, lineHeight: 5 }}>{item.date}</Text>
+              <Text style={{ alignSelf:'center',fontSize: 12 }}>{item.month}</Text>
             </View>
           </View>
         ))}
@@ -147,11 +147,6 @@ const styles = StyleSheet.create({
   title: {
     width: "70%",
   },
-  shadow: {
-    shadowOpacity: 2,
-    textShadowRadius: 10,
-    textShadowOffset: { width: 2, height: 2 },
-  },
   streak: {
     flexDirection: "row",
     justifyContent: "space-evenly",
@@ -172,8 +167,8 @@ const styles = StyleSheet.create({
     boxShadow: "0px 0px 3px gray",
   },
   date: {
-    width:'100%',
-    padding:4,
+    width:'90%',
+    paddingTop:7,
     justifyContent: "center",
     alignSelf: "center",
     backgroundColor: "rgb(255, 255, 255)",
