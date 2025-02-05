@@ -1,143 +1,88 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, ScrollView, Dimensions } from "react-native";
-import * as Progress from "react-native-progress";
 import TodaysTask from "@/components/todaysTask";
 import Modal from "@/components/modal";
 import Animated, { FadeIn } from "react-native-reanimated";
-import AntDesign from "@expo/vector-icons/AntDesign";
 
-class Dashboard extends Component {
-  state = {
-    tasks: [
-      {
-        _id: "0",
-        title: "study",
-        priority: 1,
-        score: 5,
-        target: 10,
-        remarks: "ha hah ahahaha asfasf",
-        isMeasurable: true,
-        isDone: false,
-        subTasks: [
-          {
-            _id: "0",
-            title: "study",
-            priority: 1,
-            score: 5,
-            target: 10,
-            remarks: "ha hah ahahaha asfasf",
-            isMeasurable: true,
-            isDone: false,
-            subTasks: [],
-          },
-          {
-            _id: "0",
-            title: "study",
-            priority: 1,
-            score: 5,
-            target: 10,
-            remarks: "ha hah ahahaha asfasf",
-            isMeasurable: true,
-            isDone: false,
-            subTasks: [],
-          },
-        ],
-      },
-      {
-        _id: "1",
-        title: "game",
-        priority: 1,
-        score: 8,
-        target: 8,
-        remarks: "ha hah ahahaha asfasf",
-        isMeasurable: true,
-        isDone: false,
-        subTasks: [],
-      },
-      {
-        _id: "2",
-        title: "exercise",
-        priority: 1,
-        isMeasurable: false,
-        score: 0,
-        target: 1,
-        remarks: "",
-        isDone: true,
-        subTasks: [],
-      },
-      {
-        _id: "3",
-        title: "meditate",
-        priority: 1,
-        isMeasurable: false,
-        score: 0,
-        target: 1,
-        isDone: false,
-        subTasks: [],
-      },
-      {
-        _id: "4",
-        title: "10k steps",
-        priority: 1,
-        isMeasurable: false,
-        score: 0,
-        target: 1,
-        isDone: false,
-        subTasks: [],
-      },
-    ],
-    isModalVisible: false,
-    currentTask: {},
-    completionValue: 30,
-    completionTarget: 50,
-    showCompletion: false,
+interface task {
+  _id: String;
+  title: String;
+  priority: Number;
+  taskReport: {
+    date: Date;
+    workDone: Number;
+    remarks: String;
   };
+  target: Number;
+  isMeasurable: Boolean;
+  isDone: Boolean;
+}
 
-  showTaskEditModal = (index: number) => {
-    console.log("show modal", index);
-    this.setState({ currentTask: this.state.tasks[index] });
-    this.setState({ isModalVisible: true });
-  };
+interface myState {
+  tasks: task[];
+  isModalVisible: Boolean;
+  currentTask: task | {};
+  loading: Boolean;
+  error: String;
+}
 
-  hideTaskEditModal = () => {
-    console.log("hide modal");
-    this.setState({ currentTask: {} });
-    this.setState({ isModalVisible: false });
+class Dashboard extends Component<{}, myState> {
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      tasks: [],
+      isModalVisible: false,
+      currentTask: {},
+      loading: true,
+      error: "",
+    };
+  }
+
+  toggleTaskEditModal = (index: number) => {
+    if (Object.getOwnPropertyNames(this.state.currentTask).length == 0)
+      this.setState({ currentTask: this.state.tasks[index] });
+    else this.setState({ currentTask: {} });
+    this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
   updateTaskRemarks = (value: string, index: number) => {
-		let newTasks = this.state.tasks;
-		newTasks[index].remarks = value
-		this.setState({tasks:newTasks})
-	}
-	updateTaskScore = (value: string, index: number) => {
     let newTasks = this.state.tasks;
-    const oldScore = newTasks[index].score;
-    let newCompletionValue = this.state.completionValue;
+    newTasks[index].taskReport.remarks = value;
+    this.setState({ tasks: newTasks });
+  };
 
-    newTasks[index].score = parseInt(value);
-    newCompletionValue +=
-      ((10 / newTasks[index].priority) * (newTasks[index].score - oldScore)) /
-      newTasks[index].target;
-
-    if (newCompletionValue / this.state.completionTarget === 1)
-    this.setState({ completionValue: newCompletionValue });
+  updateTaskScore = (value: string, index: number) => {
+    let newTasks = this.state.tasks;
+    newTasks[index].taskReport.workDone = parseInt(value);
     this.setState({ tasks: newTasks });
   };
 
   toggleTaskCheck = (index: number) => {
     let newTasks = this.state.tasks;
     newTasks[index].isDone = !newTasks[index].isDone;
-    let newCompletionValue = this.state.completionValue;
-
-    if (newTasks[index].isDone)
-      newCompletionValue += 10 / newTasks[index].priority;
-    else newCompletionValue -= 10 / newTasks[index].priority;
-
-    if (newCompletionValue / this.state.completionTarget === 1)
-      console.log("sd");
-    this.setState({ completionValue: newCompletionValue });
     this.setState({ tasks: newTasks });
+  };
+
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
+    fetch("http://localhost:3000/api/v1/user/67a2e79597e84d7681b085f5").then(
+      (response) => {
+        response
+          .json()
+          .then((response) => {
+            console.log(response.data.allTasks);
+            this.setState({ tasks: response.data.allTasks, loading: false });
+          })
+          .catch((error) => {
+            console.log(error);
+            this.setState({ error, loading: false });
+            alert("failed to fetch user data");
+          });
+      }
+    );
   };
 
   render() {
@@ -153,7 +98,7 @@ class Dashboard extends Component {
                     key={index}
                     index={index}
                     task={task}
-                    showModal={this.showTaskEditModal}
+                    showModal={this.toggleTaskEditModal}
                     toggleCheck={this.toggleTaskCheck}
                   />
                 );
@@ -163,20 +108,12 @@ class Dashboard extends Component {
           <View style={styles.contentBox}>
             <Text style={styles.contentHead}>You can do it...</Text>
           </View>
-          {this.state.completionValue / this.state.completionTarget === 2 ? (
-            <Animated.View
-              entering={FadeIn}
-              style={styles.celebModal}
-            ></Animated.View>
-          ) : (
-            <></>
-          )}
           {this.state.isModalVisible ? (
             <Modal
               task={this.state.currentTask}
-              hideModal={this.hideTaskEditModal}
+              hideModal={this.toggleTaskEditModal}
               updateScore={this.updateTaskScore}
-							updateRemarks={this.updateTaskRemarks}
+              updateRemarks={this.updateTaskRemarks}
             />
           ) : (
             <></>
@@ -248,20 +185,5 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     boxShadow: "inset 0 0 5px gray",
     fontSize: 15,
-  },
-  celebModal: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#00000040",
-    backgroundImage:
-      "url('https://cdn.pixabay.com/animation/2024/05/02/07/43/07-43-00-535_512.gif')",
-    width: "100%",
-    height: "100%",
-    position: "fixed",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
   },
 });

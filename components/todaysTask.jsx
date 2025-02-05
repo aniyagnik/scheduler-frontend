@@ -3,47 +3,20 @@ import React from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as Progress from "react-native-progress";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { Link } from 'expo-router';
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { Link } from "expo-router";
 
 const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
-  const streak = [
-    {
-      date: "21",
-      month: "feb",
-      value: "12:00",
-    },
-    {
-      date: "20",
-      month: "feb",
-      value: "12:00",
-    },
-    {
-      date: "19",
-      month: "feb",
-      value: "12:00",
-    },
-    {
-      date: "18",
-      month: "feb",
-      value: "12:00",
-    },
-    {
-      date: "17",
-      month: "feb",
-      value: "12:00",
-    },
-    {
-      date: "16",
-      month: "feb",
-      value: "12:00",
-    },
-    {
-      date: "15",
-      month: "feb",
-      isDone: false,
-    },
-  ];
+  const date = new Date().toDateString().split(" ").slice(1, 3).reverse();
+  let streak = task.taskReport.slice(1, 8);
+  streak = streak.map((item, index) => {
+    return {
+      ...item,
+      date: parseInt(date[0]) - (index + 1).toString(),
+      month: date[1],
+    };
+  });
+  console.log(streak);
   return (
     <View style={styles.task}>
       <View style={styles.todayTaskBox}>
@@ -52,12 +25,12 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
         </View>
         <View>
           {task.isMeasurable ? (
-            task.score / task.target < 1 ? (
+            task.taskReport[0].workDone / task.target < 1 ? (
               <Progress.Circle
                 animated={false}
                 onClick={() => showModal(index)}
                 style={{ cursor: "pointer" }}
-                progress={task.score / task.target}
+                progress={task.taskReport[0].workDone / task.target}
                 thickness={3}
                 textStyle={{ fontSize: 9 }}
                 showsText={true}
@@ -75,49 +48,50 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
             <TouchableOpacity onPress={() => toggleCheck(index)}>
               <View style={{ cursor: "pointer" }}>
                 {task.isDone ? (
-                  <Entypo
-                    name="check"
-                    size={24}
-                    color="green"
-                    
-                  />
+                  <Entypo name="check" size={24} color="green" />
                 ) : (
-                  <Entypo
-                    name="cross"
-                    size={24}
-                    color="gray"
-                    
-                  />
+                  <Entypo name="cross" size={24} color="gray" />
                 )}
               </View>
             </TouchableOpacity>
           )}
         </View>
-         <Link href="/statistics">
-         <Ionicons name="stats-chart" size={24} color="black" />
+        <Link href="/statistics">
+          <Ionicons name="stats-chart" size={24} color="black" />
         </Link>
       </View>
       <View style={styles.streak}>
-        {streak.map((item,index) => (
+        {streak.map((item, index) => (
           <View
-            style={[styles.streakItem, { backgroundColor: index%2==0?"rgb(118, 255, 143)":"rgb(246, 250, 122)" }]}
+            style={[
+              styles.streakItem,
+              {
+                backgroundColor:
+                  index % 2 == 0 ? "rgb(118, 255, 143)" : "rgb(246, 250, 122)",
+              },
+            ]}
             key={item.date}
           >
             <Text style={{ fontSize: 13, alignSelf: "center" }}>
-              {item.value ? (
-                item.value
+              {item.workDone ? (
+                item.workDone
               ) : (
                 <Entypo
                   name={item.isDone ? "check" : "cross"}
                   size={15}
                   color={item.isDone ? "green" : "gray"}
-                  
                 />
               )}
             </Text>
             <View style={styles.date}>
-              <Text style={{ alignSelf:'center',fontSize: 12, lineHeight: 5 }}>{item.date}</Text>
-              <Text style={{ alignSelf:'center',fontSize: 12 }}>{item.month}</Text>
+              <Text
+                style={{ alignSelf: "center", fontSize: 12, lineHeight: 5 }}
+              >
+                {item.date}
+              </Text>
+              <Text style={{ alignSelf: "center", fontSize: 12 }}>
+                {item.month}
+              </Text>
             </View>
           </View>
         ))}
@@ -148,7 +122,7 @@ const styles = StyleSheet.create({
     width: "70%",
   },
   streak: {
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     justifyContent: "space-evenly",
     alignContent: "center",
     color: "white",
@@ -160,15 +134,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
     paddingTop: 4,
     backgroundColor: "whitesmoke",
-    borderTopRightRadius:20,
-    borderTopLeftRadius:20,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
     borderRadius: 10,
     width: 40,
     boxShadow: "0px 0px 3px gray",
   },
   date: {
-    width:'90%',
-    paddingTop:7,
+    width: "90%",
+    paddingTop: 7,
     justifyContent: "center",
     alignSelf: "center",
     backgroundColor: "rgb(255, 255, 255)",
