@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import React from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as Progress from "react-native-progress";
@@ -7,21 +13,43 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
 
 const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
-  const date = new Date().toDateString().split(" ").slice(1, 3).reverse();
+  let date = new Date();
   let streak = task.taskReport.slice(1, 8);
-  streak = streak.map((item, index) => {
+  streak = streak.map((item) => {
+    date.setDate(date.getDate() - 1); //for daily
+    const t = date.toDateString().split(" ").slice(1, 3).reverse();
     return {
       ...item,
-      date: parseInt(date[0]) - (index + 1).toString(),
-      month: date[1],
+      date: parseInt(t[0]),
+      month: t[1],
     };
   });
-  console.log(streak);
+  const getColour = (workDone, isDone) => {
+    if (!task.isMeasurable) {
+      if (isDone) return task.colour;
+      else return "rgb(120,120,120)";
+    } else {
+      if (task.targetType === "atleast" && task.target <= workDone)
+        return task.colour;
+      else if (task.targetType === "atmost" && task.target >= workDone)
+        return task.colour;
+      else if (task.targetType === "exactly" && task.target === workDone)
+        return task.colour;
+      else return "rgb(120,120,120)";
+    }
+  };
   return (
     <View style={styles.task}>
       <View style={styles.todayTaskBox}>
         <View style={styles.title}>
-          <Text style={{ fontSize: 17 }}>{task.title}</Text>
+          <Text
+            style={{ fontSize: 17, fontWeight: "bold", color: task.colour }}
+          >
+            {task.title} 
+            {
+              task.isMeasurable?` (in ${task.unit})`:''
+            }
+          </Text>
         </View>
         <View>
           {task.isMeasurable ? (
@@ -61,37 +89,34 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
         </Link>
       </View>
       <View style={styles.streak}>
-        {streak.map((item, index) => (
-          <View
-            style={[
-              styles.streakItem,
-              {
-                backgroundColor:
-                  index % 2 == 0 ? "rgb(118, 255, 143)" : "rgb(246, 250, 122)",
-              },
-            ]}
-            key={item.date}
-          >
-            <Text style={{ fontSize: 13, alignSelf: "center" }}>
-              {item.workDone ? (
-                item.workDone
-              ) : (
-                <Entypo
-                  name={item.isDone ? "check" : "cross"}
-                  size={15}
-                  color={item.isDone ? "green" : "gray"}
-                />
-              )}
-            </Text>
+        {streak.map((item) => (
+          <View>
+            <View
+              style={[
+                styles.streakItem,
+                {
+                  height: Dimensions.get("window").width / 13,
+                  width: Dimensions.get("window").width / 13,
+                  backgroundColor: getColour(item.workDone, item.isDone),
+                },
+              ]}
+              key={item._id}
+            >
+              <Text style={{ fontSize: 15, color: "white",textShadow:'0px 0px 5px white' }}>
+                {item.workDone >= 0 ? (
+                  item.workDone
+                ) : (
+                  <Entypo
+                    name={item.isDone ? "check" : "cross"}
+                    size={20}
+                    color={item.isDone ? "lime" : "red"}
+                  />
+                )}
+              </Text>
+            </View>
             <View style={styles.date}>
-              <Text
-                style={{ alignSelf: "center", fontSize: 12, lineHeight: 5 }}
-              >
-                {item.date}
-              </Text>
-              <Text style={{ alignSelf: "center", fontSize: 12 }}>
-                {item.month}
-              </Text>
+              <Text style={styles.dateText}>{item.date}</Text>
+              <Text style={styles.dateText}>{item.month}</Text>
             </View>
           </View>
         ))}
@@ -108,7 +133,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     justifyContent: "center",
     alignContent: "center",
-    boxShadow: "inset -4px -4px 2px gray",
+    boxShadow: "0px 0px 5px 2px gray",
     borderRadius: 20,
     backgroundColor: "white",
   },
@@ -122,31 +147,37 @@ const styles = StyleSheet.create({
     width: "70%",
   },
   streak: {
+    marginHorizontal: 10,
+    marginBottom: 10,
+    borderRadius: 10,
+    backgroundColor: "lightgray",
+    boxShadow: "inset 0px 0px 5px 5px darkgray",
     flexDirection: "row-reverse",
     justifyContent: "space-evenly",
     alignContent: "center",
     color: "white",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
   },
   streakItem: {
-    borderWidth: 1,
-    paddingHorizontal: 2,
-    paddingTop: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 2,
     backgroundColor: "whitesmoke",
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-    borderRadius: 10,
-    width: 40,
+    borderRadius: 40,
     boxShadow: "0px 0px 3px gray",
   },
   date: {
+    marginTop: 5,
     width: "90%",
-    paddingTop: 7,
     justifyContent: "center",
     alignSelf: "center",
-    backgroundColor: "rgb(255, 255, 255)",
-    opacity: 0.6,
+    color: "white",
     borderRadius: 5,
+  },
+  dateText: {
+    color: "rgb(100,100,100)",
+    alignSelf: "center",
+    fontSize: 12,
+    lineHeight: 10,
   },
 });
