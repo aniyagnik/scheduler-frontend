@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import Animated, { FadeIn, SlideInDown } from "react-native-reanimated";
 
-export default function Modal({ task, hideModal, updateScore,updateRemarks }) {
+export default function Modal({ task, hideModal, updateTask }) {
   return (
     <Animated.View
       entering={FadeIn}
@@ -47,17 +47,17 @@ export default function Modal({ task, hideModal, updateScore,updateRemarks }) {
           <View style={styles.modalRows}>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>Today</Text>
             <TextInput
-              value={task.score}
+              value={task.taskReport[0].workDone}
               style={styles.textField}
-              onChangeText={(value) => updateScore(value, index)}
+              onChangeText={(value) => updateTask("workDone",value, index)}
             />
           </View>
           <View style={styles.modalRows}>
             <textarea
               placeholder="remarks"
-              value={task.remarks}
+              value={task.taskReport[0].remark}
               style={styles.textarea}
-              onChangeText={(value) => updateRemarks(value, index)}
+              onChangeText={(value) => updateRemarks("remark",value, index)}
             />
           </View>
         </View>

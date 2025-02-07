@@ -2,27 +2,11 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet, ScrollView, Dimensions } from "react-native";
 import TodaysTask from "@/components/todaysTask";
 import Modal from "@/components/modal";
-import Animated, { FadeIn } from "react-native-reanimated";
-
-interface task {
-  _id: String;
-  title: String;
-  priority: Number;
-  taskReport: {
-    date: Date;
-    workDone: Number;
-    remarks: String;
-  };
-  target: Number;
-  isMeasurable: Boolean;
-  isDone: Boolean;
-}
+import { UserContext } from "@/app/context/userContext";
 
 interface myState {
-  tasks: task[];
   isModalVisible: Boolean;
-  currentTask: task | {};
-  loading: Boolean;
+  currentTaskIndex: number;
   error: String;
 }
 
@@ -30,96 +14,67 @@ class Dashboard extends Component<{}, myState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      tasks: [],
       isModalVisible: false,
-      currentTask: {},
-      loading: true,
+      currentTaskIndex: -1,
       error: "",
     };
   }
 
   toggleTaskEditModal = (index: number) => {
-    if (Object.getOwnPropertyNames(this.state.currentTask).length == 0)
-      this.setState({ currentTask: this.state.tasks[index] });
-    else this.setState({ currentTask: {} });
+    if (this.state.currentTaskIndex === -1)
+      this.setState({ currentTaskIndex: index });
+    else this.setState({ currentTaskIndex: -1 });
     this.setState({ isModalVisible: !this.state.isModalVisible });
-  };
-
-  updateTaskRemarks = (value: string, index: number) => {
-    let newTasks = this.state.tasks;
-    newTasks[index].taskReport.remarks = value;
-    this.setState({ tasks: newTasks });
-  };
-
-  updateTaskScore = (value: string, index: number) => {
-    let newTasks = this.state.tasks;
-    newTasks[index].taskReport.workDone = parseInt(value);
-    this.setState({ tasks: newTasks });
-  };
-
-  toggleTaskCheck = (index: number) => {
-    let newTasks = this.state.tasks;
-    newTasks[index].isDone = !newTasks[index].isDone;
-    this.setState({ tasks: newTasks });
-  };
-
-  componentDidMount() {
-    this.fetchData();
-  }
-
-  fetchData = () => {
-    fetch("http://localhost:3000/api/v1/user/67a2e79597e84d7681b085f5").then(
-      (response) => {
-        response
-          .json()
-          .then((response) => {
-            console.log(response.data.allTasks);
-            this.setState({ tasks: response.data.allTasks, loading: false });
-          })
-          .catch((error) => {
-            console.log(error);
-            this.setState({ error, loading: false });
-            alert("failed to fetch user data");
-          });
-      }
-    );
   };
 
   render() {
     return (
-      <ScrollView>
-        <View style={styles.container}>
-          <View style={styles.contentBox}>
-            <Text style={styles.contentHead}>Your day includes...</Text>
-            <View style={{ flexDirection: "column" }}>
-              {this.state.tasks.map((task: any, index: number) => {
-                return (
-                  <TodaysTask
-                    key={index}
-                    index={index}
-                    task={task}
-                    showModal={this.toggleTaskEditModal}
-                    toggleCheck={this.toggleTaskCheck}
-                  />
-                );
-              })}
+      <UserContext.Consumer>
+        {(context)=>{
+          if(!context) return <Text>Error: UserContext is undefined</Text>; 
+          const { user, updateTaskField,updateTaskReportField } = context;
+        return (
+          <ScrollView>
+            <View style={styles.container}>
+              <View style={styles.contentBox}>
+                <Text style={styles.contentHead}>Your day includes...</Text>
+                <View style={{ flexDirection: "column" }}>
+                  {user?user.allTasks.map((task: any, index: number) => {
+                    return (
+                      <TodaysTask
+                        key={index}
+                        index={index}
+                        task={task}
+                        showModal={this.toggleTaskEditModal}
+                        updateTask={updateTaskField}
+                      />
+                    );
+                  }):(
+                    <TodaysTask
+                      index={-1}
+                      task={null}
+                      showModal={this.toggleTaskEditModal}
+                      updateTask={updateTaskField}
+                    />
+                  )}
+                </View>
+              </View>
+              <View style={styles.contentBox}>
+                <Text style={styles.contentHead}>You can do it...</Text>
+              </View>
+              {this.state.isModalVisible ? (
+                <Modal
+                  task={user?.allTasks[this.state.currentTaskIndex]}
+                  hideModal={this.toggleTaskEditModal}
+                  updateTask={updateTaskReportField}
+                />
+              ) : (
+                <></>
+              )}
             </View>
-          </View>
-          <View style={styles.contentBox}>
-            <Text style={styles.contentHead}>You can do it...</Text>
-          </View>
-          {this.state.isModalVisible ? (
-            <Modal
-              task={this.state.currentTask}
-              hideModal={this.toggleTaskEditModal}
-              updateScore={this.updateTaskScore}
-              updateRemarks={this.updateTaskRemarks}
-            />
-          ) : (
-            <></>
-          )}
-        </View>
-      </ScrollView>
+          </ScrollView>)
+        }}
+      </UserContext.Consumer>
     );
   }
 }
@@ -131,14 +86,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     justifyContent: "flex-start",
-    padding: 10,
+    padding: 5,
   },
   contentBox: {
     backgroundColor: "lightgray",
     padding: 20,
     borderRadius: 20,
     opacity: 0.7,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   contentHead: {
     fontSize: 20,

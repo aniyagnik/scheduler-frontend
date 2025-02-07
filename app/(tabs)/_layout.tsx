@@ -3,9 +3,11 @@ import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { View, StyleSheet } from "react-native";
+import { UserProvider } from '@/app/context/userContext';
 
 export default function TabLayout() {
   return (
+    <UserProvider>
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: "brown",
@@ -70,6 +72,7 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </UserProvider>
   );
 }
 

@@ -12,9 +12,9 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
 
-const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
+const TodaysTask = ({ task, index, showModal, updateTask }) => {
   let date = new Date();
-  let streak = task.taskReport.slice(1, 8);
+  let streak = task?task.taskReport.slice(1, 8):[];
   streak = streak.map((item) => {
     date.setDate(date.getDate() - 1); //for daily
     const t = date.toDateString().split(" ").slice(1, 3).reverse();
@@ -25,6 +25,7 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
     };
   });
   const getColour = (workDone, isDone) => {
+    if(!task) return "rgb(120,120,120)";
     if (!task.isMeasurable) {
       if (isDone) return task.colour;
       else return "rgb(120,120,120)";
@@ -43,16 +44,16 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
       <View style={styles.todayTaskBox}>
         <View style={styles.title}>
           <Text
-            style={{ fontSize: 17, fontWeight: "bold", color: task.colour }}
+            style={{ fontSize: 17, fontWeight: "bold", color: task?task.colour:"rgb(120,120,120)" }}
           >
-            {task.title} 
+            {task?task.title:"Loading..."} 
             {
-              task.isMeasurable?` (in ${task.unit})`:''
+              task?task.isMeasurable?` (in ${task.unit})`:'':''
             }
           </Text>
         </View>
         <View>
-          {task.isMeasurable ? (
+          {task?task.isMeasurable ? (
             task.taskReport[0].workDone / task.target < 1 ? (
               <Progress.Circle
                 animated={false}
@@ -73,7 +74,7 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
               />
             )
           ) : (
-            <TouchableOpacity onPress={() => toggleCheck(index)}>
+            <TouchableOpacity onPress={() => updateTask("isDone",!task.isDone,index)}>
               <View style={{ cursor: "pointer" }}>
                 {task.isDone ? (
                   <Entypo name="check" size={24} color="green" />
@@ -82,6 +83,8 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
                 )}
               </View>
             </TouchableOpacity>
+          ):(
+            <AntDesign name="loading1" size={24} color="black" />
           )}
         </View>
         <Link href="/statistics">
@@ -90,7 +93,7 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
       </View>
       <View style={styles.streak}>
         {streak.map((item) => (
-          <View>
+          <View key={item._id}>
             <View
               style={[
                 styles.streakItem,
@@ -100,7 +103,6 @@ const TodaysTask = ({ task, index, showModal, toggleCheck }) => {
                   backgroundColor: getColour(item.workDone, item.isDone),
                 },
               ]}
-              key={item._id}
             >
               <Text style={{ fontSize: 15, color: "white",textShadow:'0px 0px 5px white' }}>
                 {item.workDone >= 0 ? (
