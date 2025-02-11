@@ -1,16 +1,61 @@
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Text,
-} from "react-native";
-import React, { useState } from "react";
+import { View, StyleSheet, ScrollView, Text } from "react-native";
+import React, { useContext } from "react";
 import { ContributionGraph } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
-import TaskInfoTable from '@/components/taskInfoTable'
-import TaskHistorGraph from '@/components/taskHistoryGraph'
+import TaskInfoTable from "@/components/taskInfoTable";
+import TaskHistorGraph from "@/components/taskHistoryGraph";
+import { UserContext } from "../context/userContext";
+import { useLocalSearchParams } from "expo-router";
+
 export default function Statistics() {
-  
+  const context = useContext(UserContext);
+
+  if (!context) {
+    return <Text>Error: UserContext is undefined</Text>;
+  }
+
+  const { user } = context;
+
+  const { id } = useLocalSearchParams<{
+    id: string;
+  }>();
+
+  const task = user?.allTasks[parseInt(id)];
+
+  let date = new Date();
+  date = new Date(date.setDate(date.getDate() + 1));
+  const contributionData = task
+    ? task.taskReport.map((obj) => {
+        date = new Date(date.setDate(date.getDate() - 1));
+        return {
+          date:
+            date.getFullYear() +
+            "-" +
+            (date.getMonth() + 1) +
+            "-" +
+            date.getDate(),
+          count: task?.isMeasurable ? obj.workDone : obj.isDone ? 1 : 0,
+        };
+      })
+    : [];
+
+  const chartConfig = {
+    backgroundGradientFrom: "whitesmoke",
+    backgroundGradientFromOpacity: 1,
+    backgroundGradientTo: "whitesmoke",
+    backgroundGradientToOpacity: 0.5,
+    color: (opacity = 1) =>
+      `rgba(${task?.colour.slice(4, task?.colour.length - 1)},${opacity})`,
+    strokeWidth: 1, // optional, default 3
+    barRadius: 10,
+    propsForBackgroundLines: {
+      strokeDasharray: "",
+      strokeOpacity: 0.0,
+    },
+    propsForVerticalLabels: {},
+    useShadowColorFromDataset: false, // optional
+  };
+
   const streakInfo = [
     {
       streakDays: 20,
@@ -23,48 +68,6 @@ export default function Statistics() {
       StreakTime: "30/1/25",
     },
   ];
-  const commitsData = [
-    { date: "2025-01-02", count: 1 },
-    { date: "2025-01-03", count: 2 },
-    { date: "2025-01-04", count: 3 },
-    { date: "2025-01-05", count: 4 },
-    { date: "2025-01-06", count: 5 },
-    { date: "2025-01-30", count: 2 },
-    { date: "2025-01-31", count: 3 },
-    { date: "2025-03-01", count: 2 },
-    { date: "2025-02-02", count: 4 },
-    { date: "2025-02-05", count: 2 },
-    { date: "2025-02-30", count: 4 },
-  ];
-
-
-  const labels = {
-    week: ["Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"],
-    month: Array.from(Array(30)).map((e, i) => (i + 1).toString()),
-    year: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-  };
-
-  const barWidthValue = [1,0.2,0.5]
-  const [chartDatasets, setChartDatasets] = useState(Array.from(Array(30)).map(() => Math.floor(Math.random() * 10)));
-  const [chartLabels, setChartLabels] = useState(labels.month);
-  const [barWidth,setBarWidth] = useState(barWidthValue[1])
-
-  const chartConfig = {
-    backgroundGradientFrom: "whitesmoke",
-    backgroundGradientFromOpacity: 1,
-    backgroundGradientTo: "whitesmoke",
-    backgroundGradientToOpacity: 0.5,
-    color: (opacity=1) => `rgba(159, 31, 31,${opacity})`,
-    strokeWidth: 1, // optional, default 3
-    barPercentage: barWidth,
-    barRadius: 10,
-    propsForBackgroundLines: {
-      strokeDasharray: "",
-      strokeOpacity: 0.0
-  },
-    propsForVerticalLabels:{},
-    useShadowColorFromDataset: false, // optional
-  };
 
   const handleCalenderPress = () => {
     alert("calender cell clicked");
@@ -72,41 +75,21 @@ export default function Statistics() {
 
   const handleToolTip: any = {};
   const screenWidth = Dimensions.get("window").width;
-  
-  const reportData = {
-    labels: chartLabels,
-    datasets: [
-      {
-        data: chartDatasets,
-        color: (opacity = 1) => `rgba(34, 65, 244, ${opacity})`, // optional
-      },
-    ],
-  };
 
   const handleXView = (value: string) => {
     switch (value) {
       case "Week": {
-        setChartLabels(labels.week);
-        setChartDatasets(Array.from(Array(7)).map((e, i) => Math.floor(Math.random() * 10)));
-        setBarWidth(barWidthValue[0])
         break;
       }
       case "Month": {
-        setChartLabels(labels.month);
-        setChartDatasets(
-          Array.from(Array(30)).map((e, i) => Math.floor(Math.random() * 10))
-        );
-        setBarWidth(barWidthValue[1])
         break;
       }
       case "Year": {
-        setChartLabels(labels.year);
-        setChartDatasets(Array.from(Array(12)).map((e, i) => Math.floor(Math.random() * 3000)));
-        setBarWidth(barWidthValue[2])
         break;
       }
     }
   };
+
   return (
     <ScrollView style={{ flex: 1 }}>
       <View style={styles.statistics}>
@@ -125,18 +108,30 @@ export default function Statistics() {
         </View>
         <View style={styles.container}>
           <Text style={styles.containerTitle}>Task Info</Text>
-          <TaskInfoTable/>
+          <TaskInfoTable
+            targetType={task?.targetType}
+            isMeasurable={task?.isMeasurable}
+            data={task?.taskReport}
+            target={task?.target}
+            colour={task?.colour}
+          />
         </View>
         <View style={styles.container}>
           <Text style={styles.containerTitle}>Report</Text>
-          <TaskHistorGraph chartConfig={chartConfig} data={reportData} onPress={handleXView}/>
+          <TaskHistorGraph
+            targetType={task?.targetType}
+            target={task?.target}
+            isMeasurable={task?.isMeasurable}
+            colour={task?.colour}
+            data={task?.taskReport}
+            onPress={handleXView}
+          />
         </View>
         <View style={styles.container}>
           <Text style={styles.containerTitle}>Calender</Text>
           <View style={styles.calender}>
             <ContributionGraph
-              values={commitsData}
-              endDate={new Date("2025-03-21")}
+              values={contributionData}
               numDays={105}
               width={screenWidth}
               height={200}

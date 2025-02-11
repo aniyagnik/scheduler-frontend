@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useState, useEffect, ReactNode, useContext } from "react";
 import {User,Task, TaskReport} from "@/app/interfaces/interfaces"
 
 
@@ -52,4 +52,12 @@ function updateTaskReportField <K extends keyof TaskReport> (key: K, value: Task
       {children}
     </UserContext.Provider>
   );
+};
+
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useUser must be used within a UserProvider");
+  }
+  return context;
 };

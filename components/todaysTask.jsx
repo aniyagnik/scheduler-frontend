@@ -87,7 +87,11 @@ const TodaysTask = ({ task, index, showModal, updateTask }) => {
             <AntDesign name="loading1" size={24} color="black" />
           )}
         </View>
-        <Link href="/statistics">
+        <Link href={{
+          pathname:"/statistics",
+          params:{id:index}
+          }}
+        >
           <Ionicons name="stats-chart" size={24} color="black" />
         </Link>
       </View>

@@ -1,20 +1,59 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
 import React from "react";
+import { Entypo } from "@expo/vector-icons";
 
-const TaskInfoTable = () => {
-  const tableData = Array(10).fill({
-    date: "12/12/21",
-    score: "2.6",
-    isDone: false,
-    remarks: "this is a note.",
+const TaskInfoTable = ({ targetType, isMeasurable, data, target, colour }) => {
+  var date = new Date();
+  const shade = colour?.slice(4, colour.length - 1);
+
+  const getRowColour = (index, isDone, workDone) => {
+    const style = {
+      backgroundColor: `rgba(${shade},0.3)`,
+      marginBottom: 2,
+      boxShadow: `inset 0px 0px 1px 2px rgb(${shade
+        .split(",")
+        .map((c) => 255 - parseInt(c))})`,
+    };
+    if (!isMeasurable) {
+      if (isDone) return style;
+      else
+        return {
+          ...style,
+          backgroundColor: "rgb(200,200,200)",
+          boxShadow: `inset 0px 0px 1px 1px rgb(0,0,0)`,
+        };
+    } else {
+      if (targetType === "atleast" && target <= workDone) return style;
+      else if (targetType === "atmost" && target >= workDone) return style;
+      else if (targetType === "exactly" && target === workDone) return style;
+      else
+        return {
+          ...style,
+          backgroundColor: "rgb(200,200,200)",
+          boxShadow: `0`,
+        };
+    }
+  };
+  const tableData = data.map((item) => {
+    var yyyy = date.getFullYear() - 2000;
+    let mm = date.getMonth() + 1; // Months start at 0!
+    let dd = date.getDate();
+
+    if (dd < 10) dd = "0" + dd;
+    if (mm < 10) mm = "0" + mm;
+    const formattedToday = dd + "/" + mm + "/" + yyyy;
+    date = new Date(date.setDate(date.getDate() - 1)); //for daily
+    return {
+      ...item,
+      date: formattedToday,
+    };
   });
+
   return (
     <>
       <ScrollView>
         <View style={styles.table}>
-          <View
-            style={[styles.row, { backgroundColor: "crimson", borderWidth: 0 }]}
-          >
+          <View style={[styles.row, { backgroundColor: colour }]}>
             <Text
               style={[
                 styles.col,
@@ -48,14 +87,10 @@ const TaskInfoTable = () => {
           >
             {tableData.map((row, index) => (
               <View
+                className={"tableRow"}
                 style={[
                   styles.row,
-                  {
-                    backgroundColor:
-                      index % 2 == 0
-                        ? "rgb(210, 210, 210)"
-                        : "rgb(240, 240, 240)",
-                  },
+                  getRowColour(index, row.isDone, row.workDone),
                 ]}
                 key={index}
               >
@@ -63,8 +98,8 @@ const TaskInfoTable = () => {
                   {row.date}
                 </Text>
                 <Text style={[styles.col, { minWidth: "20%" }]}>
-                  {row.score ? (
-                    row.score
+                  {row.workDone >= 0 ? (
+                    row.workDone
                   ) : (
                     <Entypo
                       name={row.isDone ? "check" : "cross"}
@@ -82,7 +117,7 @@ const TaskInfoTable = () => {
                     },
                   ]}
                 >
-                  {row.remarks}
+                  {row.remark}
                 </Text>
               </View>
             ))}
