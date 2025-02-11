@@ -32,7 +32,7 @@ const taskHistoryGraph = ({
   let barData = data
     .map((obj) => {
       date = new Date(date.setDate(date.getDate() - 1));
-      const val = isMeasurable ? obj.workDone : isDone ? 1 : 0;
+      const val = isMeasurable ? obj.workDone : obj.isDone ? 1 : 0;
       maxValue = maxValue < val ? val : maxValue;
       const formatedDate =
         date.getDate() == 1 ? date.getDate() + " fev" : date.getDate();
@@ -42,7 +42,7 @@ const taskHistoryGraph = ({
         frontColor: getColour(obj.workDone, obj.isDone),
         topLabelComponent: () => (
           <Text style={{ color: colour, fontSize: 12, marginBottom: 6 }}>
-            {isMeasurable ? obj.workDone : isDone}
+            {isMeasurable ? obj.workDone : obj.isDone}
           </Text>
         ),
       };
