@@ -1,9 +1,10 @@
 import { View, StyleSheet, ScrollView, Text } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ContributionGraph } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import TaskInfoTable from "@/components/taskInfoTable";
 import TaskHistorGraph from "@/components/taskHistoryGraph";
+import StreakBox from "@/components/streakBox";
 import { UserContext } from "../context/userContext";
 import { useLocalSearchParams } from "expo-router";
 
@@ -19,8 +20,8 @@ export default function Statistics() {
   const { id } = useLocalSearchParams<{
     id: string;
   }>();
-
   const task = user?.allTasks[parseInt(id)];
+  const [streak, setStreak] = useState(task?.streak);
 
   let date = new Date();
   date = new Date(date.setDate(date.getDate() + 1));
@@ -56,19 +57,6 @@ export default function Statistics() {
     useShadowColorFromDataset: false, // optional
   };
 
-  const streakInfo = [
-    {
-      streakDays: 20,
-      streakText: "best",
-      StreakTime: "28/12/23 to 25/1/24",
-    },
-    {
-      streakDays: 1,
-      streakText: "current",
-      StreakTime: "30/1/25",
-    },
-  ];
-
   const handleCalenderPress = () => {
     alert("calender cell clicked");
   };
@@ -93,17 +81,56 @@ export default function Statistics() {
   return (
     <ScrollView style={{ flex: 1 }}>
       <View style={styles.statistics}>
+        <View
+          style={[
+            styles.container,
+            {
+              alignSelf: "center",
+              width: "95%",
+              zIndex: 1,
+              boxShadow: "0px 0px 15px 0px gray",
+              fontWeight: "bold",
+              backgroundColor: task?.colour,
+            },
+          ]}
+        >
+          <View style={{ justifyContent: "center" }}>
+            <Text
+              style={[
+                styles.title,
+                {
+                  color: "rgba(255, 255, 255,0.5)",
+                  textShadow: "0px 0px 5px white",
+                },
+              ]}
+            >
+              {task?.title}
+            </Text>
+          </View>
+          <View>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 15,
+                alignSelf: "center",
+                lineHeight: 30,
+                color: "rgba(255, 255, 255,0.5)",
+              }}
+            >
+              {task?.description}
+            </Text>
+          </View>
+        </View>
+        <Text style={{ width: "100%", borderWidth: 1 }}></Text>
         <View style={styles.container}>
           <Text style={styles.containerTitle}></Text>
           <View style={styles.streakStat}>
             <Text style={styles.title}>Streak</Text>
-            {streakInfo.map((item, index) => (
-              <View style={styles.streakBox} key={index}>
-                <Text style={styles.streakNumber}>{item.streakDays}</Text>
-                <Text style={styles.text}>{item.streakText}</Text>
-                <Text style={styles.text}>{item.StreakTime}</Text>
-              </View>
-            ))}
+            {streak?.map((item, index) => {
+              return (
+                <StreakBox colour={task?.colour} streak={item} key={index} />
+              );
+            })}
           </View>
         </View>
         <View style={styles.container}>
@@ -176,6 +203,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   title: {
+    color: "rgb(154, 0, 90)",
     display: "flex",
     minWidth: "100%",
     maxHeight: "20%",
@@ -183,24 +211,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 30,
     fontWeight: "bold",
-  },
-  streakBox: {
-    minWidth: "50%",
-    height: "80%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  streakNumber: {
-    minHeight: "50%",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 45,
-    color: "crimson",
-    fontWeight: "bold",
-  },
-  text: {
-    fontSize: 15,
-    lineHeight: 20,
   },
   calender: {
     maxWidth: "100%",

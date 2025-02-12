@@ -1,47 +1,12 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native";
 import React from "react";
 import { Entypo } from "@expo/vector-icons";
+import { getColour } from "@/utility/index";
 
 const TaskInfoTable = ({ targetType, isMeasurable, data, target, colour }) => {
   var date = new Date();
-  const shade = colour?.slice(4, colour.length - 1);
-
-  const getRowColour = (index, isDone, workDone) => {
-    const style = {
-      backgroundColor: `rgba(${shade},0.3)`,
-      marginBottom: 2,
-      boxShadow: `inset 0px 0px 1px 2px rgb(${shade
-        .split(",")
-        .map((c) => 255 - parseInt(c))})`,
-    };
-    if (!isMeasurable) {
-      if (isDone) return style;
-      else
-        return {
-          ...style,
-          backgroundColor: "rgb(200,200,200)",
-          boxShadow: `inset 0px 0px 1px 1px rgb(0,0,0)`,
-        };
-    } else {
-      if (targetType === "atleast" && target <= workDone) return style;
-      else if (targetType === "atmost" && target >= workDone) return style;
-      else if (targetType === "exactly" && target === workDone) return style;
-      else
-        return {
-          ...style,
-          backgroundColor: "rgb(200,200,200)",
-          boxShadow: `0`,
-        };
-    }
-  };
   const tableData = data.map((item) => {
-    var yyyy = date.getFullYear() - 2000;
-    let mm = date.getMonth() + 1; // Months start at 0!
-    let dd = date.getDate();
-
-    if (dd < 10) dd = "0" + dd;
-    if (mm < 10) mm = "0" + mm;
-    const formattedToday = dd + "/" + mm + "/" + yyyy;
+    const formattedToday = date.toLocaleDateString('en-GB')
     date = new Date(date.setDate(date.getDate() - 1)); //for daily
     return {
       ...item,
@@ -57,7 +22,7 @@ const TaskInfoTable = ({ targetType, isMeasurable, data, target, colour }) => {
             <Text
               style={[
                 styles.col,
-                { color: "white", minWidth: "20%", fontWeight: "bold" },
+                { color: "white", minWidth: "25%", fontWeight: "bold" },
               ]}
             >
               Date
@@ -90,14 +55,23 @@ const TaskInfoTable = ({ targetType, isMeasurable, data, target, colour }) => {
                 className={"tableRow"}
                 style={[
                   styles.row,
-                  getRowColour(index, row.isDone, row.workDone),
+                  {
+                    backgroundColor: `rgba(${getColour(
+                      isMeasurable,
+                      row.isDone,
+                      row.workDone,
+                      target,
+                      targetType,
+                      colour
+                    ).slice(4, colour.length - 1)},0.3)`,
+                  },
                 ]}
                 key={index}
               >
-                <Text style={[styles.col, { minWidth: "20%" }]}>
+                <Text style={[styles.col, { minWidth: "25%" }]}>
                   {row.date}
                 </Text>
-                <Text style={[styles.col, { minWidth: "20%" }]}>
+                <Text style={[styles.col, { minWidth: "15%" }]}>
                   {row.workDone >= 0 ? (
                     row.workDone
                   ) : (
@@ -145,6 +119,7 @@ const styles = StyleSheet.create({
     wordWrap: "anywhere",
   },
   row: {
+    marginBottom: 2,
     borderRadius: 10,
     width: "100%",
     flexDirection: "row",

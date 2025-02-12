@@ -23,6 +23,13 @@ export type Task = {
   target: Number;
   remark: String;
   colour: String;
+  streak:[
+    {
+      text:String,
+      from:Date,
+      to:Date,
+    }
+  ],
   taskReport: TaskReport[];
   //timePeriod:['sfsdfsdf2','213eqwdd','12qewdasas'],
 };

@@ -11,34 +11,19 @@ import * as Progress from "react-native-progress";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
+import {getColour} from "@/utility/index"
 
 const TodaysTask = ({ task, index, showModal, updateTask }) => {
   let date = new Date();
   let streak = task?task.taskReport.slice(1, 8):[];
   streak = streak.map((item) => {
-    date.setDate(date.getDate() - 1); //for daily
-    const t = date.toDateString().split(" ").slice(1, 3).reverse();
+    const d = new Date(item.date)
     return {
       ...item,
-      date: parseInt(t[0]),
-      month: t[1],
+      date: d.getDate(),
+      month: d.toDateString().slice(4,7),
     };
   });
-  const getColour = (workDone, isDone) => {
-    if(!task) return "rgb(120,120,120)";
-    if (!task.isMeasurable) {
-      if (isDone) return task.colour;
-      else return "rgb(120,120,120)";
-    } else {
-      if (task.targetType === "atleast" && task.target <= workDone)
-        return task.colour;
-      else if (task.targetType === "atmost" && task.target >= workDone)
-        return task.colour;
-      else if (task.targetType === "exactly" && task.target === workDone)
-        return task.colour;
-      else return "rgb(120,120,120)";
-    }
-  };
   return (
     <View style={styles.task}>
       <View style={styles.todayTaskBox}>
@@ -96,7 +81,10 @@ const TodaysTask = ({ task, index, showModal, updateTask }) => {
         </Link>
       </View>
       <View style={styles.streak}>
-        {streak.map((item) => (
+        {streak.map((item) => {
+          const colour = getColour(task.isMeasurable, item.isDone,item.workDone,task.target,task.targetType,task.colour)
+          const contrastColour = `rgb(${colour.slice(4,colour.length-1).split(",").map(o=>255-o).join()})`
+          return(
           <View key={item._id}>
             <View
               style={[
@@ -104,18 +92,18 @@ const TodaysTask = ({ task, index, showModal, updateTask }) => {
                 {
                   height: Dimensions.get("window").width / 13,
                   width: Dimensions.get("window").width / 13,
-                  backgroundColor: getColour(item.workDone, item.isDone),
+                  backgroundColor: colour,
                 },
               ]}
             >
-              <Text style={{ fontSize: 15, color: "white",textShadow:'0px 0px 5px white' }}>
+              <Text style={{ fontSize: 12,fontWeight:'bold', textShadow:`0px 0px 5px white`,color: contrastColour}}>
                 {item.workDone >= 0 ? (
                   item.workDone
                 ) : (
                   <Entypo
                     name={item.isDone ? "check" : "cross"}
                     size={20}
-                    color={item.isDone ? "lime" : "red"}
+                    color={contrastColour}
                   />
                 )}
               </Text>
@@ -125,7 +113,7 @@ const TodaysTask = ({ task, index, showModal, updateTask }) => {
               <Text style={styles.dateText}>{item.month}</Text>
             </View>
           </View>
-        ))}
+        )})}
       </View>
     </View>
   );
