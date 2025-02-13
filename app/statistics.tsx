@@ -5,8 +5,9 @@ import { Dimensions } from "react-native";
 import TaskInfoTable from "@/components/taskInfoTable";
 import TaskHistorGraph from "@/components/taskHistoryGraph";
 import StreakBox from "@/components/streakBox";
-import { UserContext } from "../context/userContext";
-import { useLocalSearchParams } from "expo-router";
+import { UserContext } from "@/app/context/userContext";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function Statistics() {
   const context = useContext(UserContext);
@@ -80,42 +81,30 @@ export default function Statistics() {
 
   return (
     <ScrollView style={{ flex: 1 }}>
+      <Stack.Screen
+        options={{
+          title: task?.title.toString(),
+          headerRight: () => (
+            <Link
+              href={{
+                pathname: "/createTask",
+                params: { id: id, text: "edit" },
+              }}
+              style={{ right:20}}
+            >
+              <AntDesign name="edit" size={24} color="black" />
+            </Link>
+          ),
+        }}
+      />
       <View style={styles.statistics}>
         <View
-          style={[
-            styles.container,
-            {
-              alignSelf: "center",
-              width: "95%",
-              zIndex: 1,
-              boxShadow: "0px 0px 15px 0px gray",
-              fontWeight: "bold",
-              backgroundColor: task?.colour,
-            },
-          ]}
+          style={[styles.titleContainer,{backgroundColor: task?.colour.toString()}]}
         >
-          <View style={{ justifyContent: "center" }}>
-            <Text
-              style={[
-                styles.title,
-                {
-                  color: "rgba(255, 255, 255,0.5)",
-                  textShadow: "0px 0px 5px white",
-                },
-              ]}
-            >
-              {task?.title}
-            </Text>
-          </View>
+            <Text style={styles.taskName}>{task?.title}</Text>
           <View>
             <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 15,
-                alignSelf: "center",
-                lineHeight: 30,
-                color: "rgba(255, 255, 255,0.5)",
-              }}
+              style={styles.taskDescription}
             >
               {task?.description}
             </Text>
@@ -183,6 +172,21 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: "white",
   },
+  titleContainer:{
+    alignSelf: "center",
+    width: "95%",
+    boxShadow: "0px 0px 15px 0px gray",
+    fontWeight: "bold",
+    borderRadius: 5,
+    backgroundColor: "rgb(220,220,220)",
+  },
+  taskDescription:{
+    fontWeight: "bold",
+    fontSize: 15,
+    alignSelf: "center",
+    lineHeight: 30,
+    color: "rgba(255, 255, 255,0.5)",
+  },
   container: {
     borderRadius: 5,
     backgroundColor: "rgb(220,220,220)",
@@ -211,6 +215,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 30,
     fontWeight: "bold",
+  },
+  taskName: {
+    alignSelf:'center',
+    justifyContent: "center",
+    fontSize: 30,
+    fontWeight:'bold',
+    color: "rgba(255, 255, 255, 0.5)",
+    textShadow: "0px 0px 5px white",
   },
   calender: {
     maxWidth: "100%",

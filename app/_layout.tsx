@@ -1,11 +1,19 @@
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
+import { UserProvider } from "@/app/context/userContext";
 
 export default function RootLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="+not-found" />
-    </Stack>
+    <UserProvider>
+      <Stack screenOptions={{
+        contentStyle:{backgroundColor:'white'}
+      }}>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="dashboard" />
+        <Stack.Screen name="calender" />
+        <Stack.Screen name="createTask" />
+        <Stack.Screen name="statistics" />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+    </UserProvider>
   );
 }

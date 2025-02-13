@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode, useContext } from "react";
-import {User,Task, TaskReport} from "@/app/interfaces/interfaces"
+import {User,Task, TaskReport} from "@/interfaces/interfaces"
 
 
 type UserContextType = {
@@ -36,7 +36,7 @@ function updateTaskReportField <K extends keyof TaskReport> (key: K, value: Task
   useEffect(() => {
     const fetchUser = async () => {
       try{
-        const response = await fetch("http://localhost:3000/api/v1/user/67a2e79597e84d7681b085f5")
+        const response = await fetch("https://scheduler-backend-zzaq.onrender.com/api/v1/user/67a2e79597e84d7681b085f5")
         const data: any = await response.json();
         setUser(data?data.data:null);
       }catch(error){

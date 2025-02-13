@@ -9,10 +9,12 @@ import {
 import React, { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import ValidateTextInput from "@/components/validateTextInput";
 
 const TaskDetails = () => {
+  const { job } = useLocalSearchParams();
+  console.log(job)
   const [formData, setFormData] = useState({
     title: "",
     description: "",
