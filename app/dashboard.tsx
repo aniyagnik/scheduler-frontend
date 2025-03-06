@@ -62,7 +62,6 @@ class Dashboard extends Component<{}, myState> {
                             index={index}
                             task={task}
                             showModal={this.toggleTaskEditModal}
-                            updateTask={updateTaskField}
                           />
                         );
                       })
@@ -71,7 +70,6 @@ class Dashboard extends Component<{}, myState> {
                         index={-1}
                         task={null}
                         showModal={this.toggleTaskEditModal}
-                        updateTask={updateTaskField}
                       />
                     )}
                   </View>
@@ -82,6 +80,7 @@ class Dashboard extends Component<{}, myState> {
                 {this.state.isModalVisible ? (
                   <Modal
                     task={user?.allTasks[this.state.currentTaskIndex]}
+                    index={this.state.currentTaskIndex}
                     hideModal={this.toggleTaskEditModal}
                     updateTask={updateTaskReportField}
                   />

@@ -19,17 +19,23 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
 function updateTaskField <K extends keyof Task> (key: K, value: Task[K],index:number) {
-  const updatedTasks:Task[] = user?user.allTasks:[]
-  if(updatedTasks!=null)  
-    updatedTasks[index][key]=value
-  setUser((prevUser) => (prevUser ? { ...prevUser, allTasks: updatedTasks } : prevUser));
+  setUser((prevUser) => {
+    if (!prevUser) return prevUser;
+    const updatedTasks = [...prevUser.allTasks]; // Create a new array
+    updatedTasks[index] = { ...updatedTasks[index], [key]: value }; // Update task
+    return { ...prevUser, allTasks: updatedTasks };
+  });
 };
 
 function updateTaskReportField <K extends keyof TaskReport> (key: K, value: TaskReport[K],taskIndex:number) {
-  const updatedTasks:Task[] = user?user.allTasks:[]
-  if(updatedTasks!=null)  
-    updatedTasks[taskIndex].taskReport[0][key]=value
-  setUser((prevUser) => (prevUser ? { ...prevUser, allTasks: updatedTasks } : prevUser));
+  setUser((prevUser) => {
+    if (!prevUser) return prevUser;
+    const updatedTasks = [...prevUser.allTasks];
+    const updatedTaskReport = [...updatedTasks[taskIndex].taskReport]; // Copy taskReport array
+    updatedTaskReport[0] = { ...updatedTaskReport[0], [key]: value }; // Update field
+    updatedTasks[taskIndex] = { ...updatedTasks[taskIndex], taskReport: updatedTaskReport };
+    return { ...prevUser, allTasks: updatedTasks };
+  });
 };
   
   // Fetch User Data

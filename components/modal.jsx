@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
 import Animated, { FadeIn, SlideInDown } from "react-native-reanimated";
+import Entypo from "@expo/vector-icons/Entypo";
 
-export default function Modal({ task, hideModal, updateTask }) {
+export default function Modal({ task, index,hideModal, updateTask }) {
   return (
     <Animated.View
       entering={FadeIn}
@@ -31,33 +32,52 @@ export default function Modal({ task, hideModal, updateTask }) {
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
         }}
+        pointerEvents="auto"
+        onClick={(event) => event.stopPropagation()} // Stops click event from reaching the outer view
       >
         <View style={styles.modalHead}>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>{task.title}</Text>
+          <Text style={{ fontSize: 20, fontWeight: "bold",color:task.colour }}>{task.title}</Text>
         </View>
         <View style={styles.modalContent}>
+        {task?task.isMeasurable ? (
+            <>
+              <View style={styles.modalRows}>
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>Target</Text>
+                <TextInput
+                  placeholder={task.target}
+                  style={styles.textField}
+                  editable={false}
+                />
+              </View>
+              <View style={styles.modalRows}>
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>Today</Text>
+                <TextInput
+                  defaultValue={task.taskReport[0].workDone}
+                  style={styles.textField}
+                  onChangeText={(value) => updateTask("workDone", value, index)}
+                />
+              </View>
+            </>
+          ) : (
+            <TouchableOpacity onPress={() => updateTask("isDone",!task.taskReport[0].isDone,index)}>
+              <View style={{ cursor: "pointer" }}>
+                {task.taskReport[0].isDone ? (
+                  <Entypo name="check" size={24} color="green" />
+                ) : (
+                  <Entypo name="cross" size={24} color="gray" />
+                )}
+              </View>
+            </TouchableOpacity>
+          ):(
+            <AntDesign name="loading1" size={24} color="black" />
+          )}
           <View style={styles.modalRows}>
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Target</Text>
             <TextInput
-              placeholder={task.target}
-              style={styles.textField}
-              editable={false}
-            />
-          </View>
-          <View style={styles.modalRows}>
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Today</Text>
-            <TextInput
-              value={task.taskReport[0].workDone}
-              style={styles.textField}
-              onChangeText={(value) => updateTask("workDone",value, index)}
-            />
-          </View>
-          <View style={styles.modalRows}>
-            <textarea
               placeholder="remarks"
-              value={task.taskReport[0].remark}
+              defaultValue={task.taskReport[0].remark}
               style={styles.textarea}
-              onChangeText={(value) => updateRemarks("remark",value, index)}
+              multiline={true}
+              onChangeText={(value) => updateTask("remark", value, index)}
             />
           </View>
         </View>
@@ -106,7 +126,7 @@ const styles = StyleSheet.create({
   },
   textarea: {
     color: "black",
-    width: "90%",
+    width: "95%",
     height: "100%",
     textAlign: "center",
     borderRadius: 2,

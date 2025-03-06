@@ -13,7 +13,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
 import {getColour} from "@/utility/index"
 
-const TodaysTask = ({ task, index, showModal, updateTask }) => {
+const TodaysTask = ({ task, index, showModal }) => {
   let date = new Date();
   let streak = task?task.taskReport.slice(1, 8):[];
   streak = streak.map((item) => {
@@ -59,9 +59,9 @@ const TodaysTask = ({ task, index, showModal, updateTask }) => {
               />
             )
           ) : (
-            <TouchableOpacity onPress={() => updateTask("isDone",!task.isDone,index)}>
+            <TouchableOpacity onPress={() => showModal(index)}>
               <View style={{ cursor: "pointer" }}>
-                {task.isDone ? (
+                {task.taskReport[0].isDone ? (
                   <Entypo name="check" size={24} color="green" />
                 ) : (
                   <Entypo name="cross" size={24} color="gray" />
