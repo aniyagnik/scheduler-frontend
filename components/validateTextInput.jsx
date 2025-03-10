@@ -1,7 +1,7 @@
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import React, { useState } from "react";
 
-const ValidateTextInput = ({ name, placeholder, handleChange }) => {
+const ValidateTextInput = ({ name, defaultValue, placeholder, handleChange }) => {
   const validate = (name, value) => {
     if (value == null || value == "") setError(`*invalid ${name}`);
     else setError("");
@@ -15,6 +15,7 @@ const ValidateTextInput = ({ name, placeholder, handleChange }) => {
           validate(name, value);
           handleChange(value);
         }}
+        defaultValue={defaultValue}
         placeholder={placeholder}
         style={styles.textField}
       />

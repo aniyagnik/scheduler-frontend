@@ -6,24 +6,36 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext,useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ValidateTextInput from "@/components/validateTextInput";
+import { UserContext } from "@/app/context/userContext";
+import { Task } from "@/interfaces/interfaces";
 
 const TaskDetails = () => {
-  const { job } = useLocalSearchParams();
-  console.log(job)
+  const { id,job } = useLocalSearchParams();
+  let user, task: Task | undefined,updateTaskField, updateTaskReportField;
+  
+  if(job=='edit' && typeof id==='string') {
+    const context = useContext(UserContext);
+    if (!context) return <Text>Error: UserContext is undefined</Text>;
+    user=context.user
+    task = user?.allTasks[parseInt(id)]
+    updateTaskField=context.updateTaskField
+    updateTaskReportField=context.updateTaskReportField
+  }
+  
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    priority: "high",
-    repetition: { type: "daily", value: "1" },
-    isMeasurable: 0, // 1 for measurable, 2 for yes|no
-    targetType: "", //atleast|atmost|exactly|any
-    unit: "",
-    target: "",
+    title: task?task.title:"",
+    description: task?task.description:"",
+    priority: task?task.priority:"high",
+    repetition: task?task.repetition:{ type: "daily", value: "1" },
+    isMeasurable: task?.isMeasurable?1:2, // 1 for measurable, 2 for yes|no
+    targetType:task?task.targetType: "", //atleast|atmost|exactly|any
+    unit: task?task.unit:"",
+    target: task?task.target:"",
   });
 
   const router = useRouter();
@@ -32,7 +44,7 @@ const TaskDetails = () => {
     //if(formData.isMeasurable==1)
     console.log(formData);
     const requestOptions = {
-      method: "POST",
+      method: job=="create"?"POST":"PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...formData,
@@ -48,7 +60,7 @@ const TaskDetails = () => {
             .then((data) => alert(data.message))
             .catch((error) => {
               console.log(error);
-              alert("failed to create new task");
+              alert(`failed to ${job} task`);
             });
         }
       );
@@ -74,11 +86,12 @@ const TaskDetails = () => {
         { height: 0.8 * Dimensions.get("screen").height },
       ]}
     >
-      <Text style={styles.heading}>Create your habit </Text>
+      <Text style={styles.heading}>{job} your habit </Text>
       <View style={{ minHeight: 0.6 * Dimensions.get("screen").height }}>
         <ValidateTextInput
           name="title"
           placeholder="task name"
+          defaultValue={task?.title}
           handleChange={(value: string) => {
             setFormData((prevFormData) => ({
               ...prevFormData,
@@ -91,6 +104,7 @@ const TaskDetails = () => {
           <TextInput
             placeholder="description (optional)"
             style={styles.textField}
+            defaultValue={task?.description}
             onChangeText={(value: string) =>
               setFormData((prevFormData) => ({
                 ...prevFormData,
@@ -163,6 +177,7 @@ const TaskDetails = () => {
                 <ValidateTextInput
                   name="unit"
                   placeholder="unit e.g. hours"
+                  defaultValue={task?.unit}
                   handleChange={(value: string) => {
                     setFormData((prevFormData) => ({
                       ...prevFormData,
@@ -175,6 +190,7 @@ const TaskDetails = () => {
                 <ValidateTextInput
                   name="target"
                   placeholder="target e.g. 8"
+                  defaultValue={task?.target}
                   handleChange={(value: string) => {
                     setFormData((prevFormData) => ({
                       ...prevFormData,

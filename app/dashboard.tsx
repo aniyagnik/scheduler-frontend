@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useContext,Component } from "react";
 import { Text, View, StyleSheet, ScrollView, Dimensions } from "react-native";
 import TodaysTask from "@/components/todaysTask";
 import Modal from "@/components/modal";
@@ -39,15 +39,16 @@ class Dashboard extends Component<{}, myState> {
             <ScrollView>
               <Stack.Screen
                 options={{
-                  headerRight:()=>  
-                  <Link href='/calendar'>
-                    <Ionicons
-                    style={{right:20}}
-                    name="calendar-sharp"
-                    color='black'
-                    size={24}
-                  />
-                </Link>
+                  headerRight: () => (
+                    <Link href="/calendar">
+                      <Ionicons
+                        style={{ right: 20 }}
+                        name="calendar-sharp"
+                        color="black"
+                        size={24}
+                      />
+                    </Link>
+                  ),
                 }}
               />
               <View style={styles.container}>
@@ -87,11 +88,25 @@ class Dashboard extends Component<{}, myState> {
                 ) : (
                   <></>
                 )}
-                  <View style={[styles.taskIcon,{position:'absolute',left:0.8*Dimensions.get('screen').width,top:0.8*Dimensions.get('screen').height}]}>
-                    <Link href='/createTask'>
+                <View
+                  style={[
+                    styles.taskIcon,
+                    {
+                      position: "absolute",
+                      left: 0.8 * Dimensions.get("screen").width,
+                      top: 0.8 * Dimensions.get("screen").height,
+                    },
+                  ]}
+                >
+                  <Link
+                    href={{
+                      pathname: "/task",
+                      params: { job: "create" },
+                    }}
+                  >
                     <Ionicons name={"add-circle"} color={"white"} size={24} />
-                    </Link>
-                  </View>
+                  </Link>
+                </View>
               </View>
             </ScrollView>
           );

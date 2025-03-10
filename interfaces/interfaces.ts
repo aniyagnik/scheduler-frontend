@@ -1,31 +1,31 @@
 type Repetition = { 
-    type: String; 
-    value: String 
+    type: string; 
+    value: string 
 };
 
 export type TaskReport = {
   date: Date;
   workDone: Number;
   isDone: Boolean;
-  remark: String;
+  remark: string;
 };
 
 export type Task = {
-  userId: String;
-  title: String;
-  description: String;
-  priority: String;
+  userId: string;
+  title: string;
+  description: string;
+  priority: string;
   repetition: Repetition;
-  status: String;
+  status: string;
   isMeasurable: Boolean;
-  unit: String;
-  targetType: String;
+  unit: string;
+  targetType: string;
   target: Number;
-  remark: String;
-  colour: String;
+  remark: string;
+  colour: string;
   streak:[
     {
-      text:String,
+      text:string,
       from:Date,
       to:Date,
     }
@@ -34,12 +34,12 @@ export type Task = {
   //timePeriod:['sfsdfsdf2','213eqwdd','12qewdasas'],
 };
 export type User = {
-  _id: String;
-  displayName: String;
-  email: String;
-  firstName: String;
-  lastName: String;
-  avatar: String;
-  newDayStartsAt: String | null;
+  _id: string;
+  displayName: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  avatar: string;
+  newDayStartsAt: string | null;
   allTasks: Task[];
 };

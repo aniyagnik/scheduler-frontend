@@ -87,8 +87,8 @@ export default function Statistics() {
           headerRight: () => (
             <Link
               href={{
-                pathname: "/createTask",
-                params: { id: id, text: "edit" },
+                pathname: "/task",
+                params: { job: "edit",id: id },
               }}
               style={{ right:20}}
             >

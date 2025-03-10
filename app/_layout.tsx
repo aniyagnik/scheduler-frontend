@@ -10,7 +10,7 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="dashboard" />
         <Stack.Screen name="calendar" />
-        <Stack.Screen name="createTask" />
+        <Stack.Screen name="task" />
         <Stack.Screen name="statistics" />
         <Stack.Screen name="+not-found" />
       </Stack>
